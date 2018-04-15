@@ -1,0 +1,30 @@
+#search {
+    max-width: max-content;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+#search input {
+    font-size: 20px;
+    margin: 10px;
+}
+
+#menu {
+    min-width: 400px;
+    margin: 20px;
+    float: left;
+}
+
+#contents #menu li {
+    margin: 10px 0;
+}
+
+#contents li {
+    margin: 3px 0;
+}
+
+#image_1 {
+    float: right;
+    width: 300px;
+    margin: 15px;
+}

@@ -1,11 +1,52 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="../../design/css/base.css">
-    <title>Demo</title>
-</head>
-<body>
-    <h1>The beginning</h1>
-</body>
-</html>
+{% extends "base.tpl.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="../../design/css/index.css" rel="stylesheet" />
+{% endblock %}
+
+{% block title %}
+    <title>
+        Demo
+    </title>
+{% endblock %}
+
+{% block header %}
+    <h1>
+        Demo
+    </h1>
+{% endblock %}
+{% block contents %}
+    {% block search %}
+        {% include "partials/search.tpl.twig" %}
+    {% endblock %}
+    <div id="menu">
+        <ul>
+            <li><a href="baseTypes.php">Base types processing</a></li>
+            <li><a href="">Writing style</a></li>
+            <li><a href="">Forms processing</a></li>
+            <li><a href="">Interaction with the database</a></li>
+            <li><a href="">MVC conception</a></li>
+            <li><a href="">MySQL database design</a></li>
+        </ul>
+    </div>
+    <p>
+        Этот проект является демонстраций моих знаний web-технологий на момент середины апреля 2018 года. Здесь при помощи ряда страниц я показываю свой уровень понимания таких столпов web-разработки на PHP, как концепция MVC, взаимодействие с базой данных, серверная обработка форм; вопросы валидации, сериализации данных, поступающих пользовательским вводом, защита от sql иъекций и XSS; высокоуровневые решения тривиальных задач, предоставляемые PHP 7, основы и интересные моменты написания собственных функций; вопросы оптимизации, проектирования базы данных, логирования и шаблонизации.
+    </p>
+    <img id="image_1" src="../../design/images/red.jpg" alt="image:)">
+    <p>
+        Основными ресурсами, на базе которых я формировал свой багаж знаний на данный момент являются
+    </p>
+    <ol>
+        <li><a href="http://php.net/">php.net</a> на данном уровне моей квалификации успешно заменяет документацию языка.</li>
+        <li>Д. Скляр, А. Трахтенберг «PHP Cookbook 3 издание» - объёмный метериал для расширения и системматизация знаний.</li>
+        <li><a href="https://habrahabr.ru/">habrahabr.ru</a> объясняет важные концепции простыми словами и практическими примерами.</li>
+        <li><a href="https://ruhighload.com/">ruhighload.com</a> - крупное хранилище незаменимых статей, многие из которых необходимы к прочтению каждому разработчику.</li>
+        <li><a href="https://stackoverflow.com/">stackoverflow.com</a> помогает решать локальные проблемы с кодом.</li>
+    </ol>
+{% endblock %}
+{% block toMain %}
+    <div id="toMain">
+        <a href="index.php">To the beginning</a>
+    </div>
+{% endblock %}

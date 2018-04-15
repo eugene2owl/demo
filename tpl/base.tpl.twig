@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block bootstrap %}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    {% endblock %}
+
+    {% block stylesheets %}
+        <link href="../../design/css/base.css" rel="stylesheet" />
+    {% endblock %}
+    {% block title %}{% endblock %}
+</head>
+<body>
+<div id="wrapper">
+    {% block header %}{% endblock %}
+    <div id="contents">
+        {% block contents %}{%  endblock %}
+    </div>
+    {% block contacts %}
+        {% include "partials/contacts.tpl.twig" %}
+    {% endblock %}
+    {% block toMain %}
+        <div id="toMain">
+            <a href="index.php">To main</a>
+        </div>
+    {% endblock %}
+</div>
+</body>
+</html>
