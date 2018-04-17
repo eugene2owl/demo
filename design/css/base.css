@@ -2,9 +2,12 @@ html, body {
     margin: 0;
     padding: 0;
     font-size: 23px;
-    text-indent: 40px;
     color: black;
     background-color: #E4D9C4;
+}
+
+p {
+    text-indent: 40px;
 }
 
 #wrapper {
@@ -58,4 +61,20 @@ a:hover {
     text-decoration: none;
     color: #FF3537;
     font-weight: bold;
+}
+
+.code {
+    overflow: auto;
+    padding: 0 20px;
+    color: #9CA9A9;
+    background-color: #212529;
+}
+
+.output {
+    color: #212529;
+    background-color: #9CA9A9;
+}
+
+pre {
+    margin-bottom: 0;
 }

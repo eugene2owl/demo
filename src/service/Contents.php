@@ -16,6 +16,7 @@ class Contents
             "articles" => $contentsRepo->getEntityArrayOnPage("articles", $page),
             "images" => $contentsRepo->getEntityArrayOnPage("images", $page),
             "links" => $contentsRepo->getEntityArrayOnPage("links", $page),
+            "codes" => $contentsRepo->getEntityArrayOnPage("codes", $page),
         ];
         return $contents;
     }

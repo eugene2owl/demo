@@ -1,5 +1,9 @@
 #image_1 {
     float: left;
-    width: 300px;
-    margin: 30px;
+    width: 350px;
+    margin: 10px 30px;
+}
+
+ol {
+    padding: 0;
 }

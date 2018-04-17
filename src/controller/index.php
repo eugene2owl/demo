@@ -15,10 +15,10 @@ $loader = new \Twig_Loader_Filesystem("../../tpl/");
 $twig = new \Twig_Environment($loader);
 
 echo $twig->render("index.tpl.twig", [
-    "title" => $contents["titles"][0]["title"],
-    "header" => $contents["titles"][0]["title"],
-    "siteBar" => $titles,
-    "article_1" => $contents["articles"][0]["article"],
-    "article_2" => $contents["articles"][1]["article"],
-    "sources" => $contents["links"],
+    "title"         => $contents["titles"][0]["title"],
+    "header"        => $contents["titles"][0]["title"],
+    "siteBar"       => $titles,
+    "article_1"     => $contents["articles"][0]["article"],
+    "article_2"     => $contents["articles"][1]["article"],
+    "sources"       => $contents["links"],
 ]);

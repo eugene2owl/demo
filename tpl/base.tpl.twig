@@ -9,11 +9,19 @@
     {% block stylesheets %}
         <link href="design/css/base.css" rel="stylesheet"/>
     {% endblock %}
-    {% block title %}{% endblock %}
+    {% block title %}
+        <title>
+            {{ title }}
+        </title>
+    {% endblock %}
 </head>
 <body>
 <div id="wrapper">
-    {% block header %}{% endblock %}
+    {% block header %}
+        <h1>
+            {{ header }}
+        </h1>
+    {% endblock %}
     <div id="contents">
         {% block contents %}{%  endblock %}
     </div>

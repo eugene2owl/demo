@@ -7,9 +7,16 @@ require_once "../service/Contents.php";
 
 use Demo\Service\Contents as ContentsService;
 
-    $loader = new \Twig_Loader_Filesystem("../../tpl");
-    $twig = new \Twig_Environment($loader);
+$tunnelToDB = new ContentsService();
+$contents = $tunnelToDB->getContents(basename(__FILE__));
+$codes = $tunnelToDB->getEntityArray("codes");
 
-    echo $twig->render("baseTypes.tpl.twig", [
+$loader = new \Twig_Loader_Filesystem("../../tpl");
+$twig = new \Twig_Environment($loader);
 
-    ]);
+echo $twig->render("baseTypes.tpl.twig", [
+    "title"        => $contents["titles"][0]["title"],
+    "header"       => $contents["titles"][0]["title"],
+    "article_1"    => $contents["articles"][0]["article"],
+    "codes"        => $codes,
+]);
