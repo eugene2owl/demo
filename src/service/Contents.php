@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Demo\Service;
 
 require_once "../repository/Contents.php";
@@ -12,11 +14,12 @@ class Contents
     {
         $contentsRepo = new ContentsRepo();
         $contents = [
-            "titles" => $contentsRepo->getEntityArrayOnPage("titles", $page),
-            "articles" => $contentsRepo->getEntityArrayOnPage("articles", $page),
-            "images" => $contentsRepo->getEntityArrayOnPage("images", $page),
-            "links" => $contentsRepo->getEntityArrayOnPage("links", $page),
-            "codes" => $contentsRepo->getEntityArrayOnPage("codes", $page),
+            "titles"      => $contentsRepo->getEntityArrayOnPage("titles", $page),
+            "articles"    => $contentsRepo->getEntityArrayOnPage("articles", $page),
+            "images"      => $contentsRepo->getEntityArrayOnPage("images", $page),
+            "links"       => $contentsRepo->getEntityArrayOnPage("links", $page),
+            "codes"       => $contentsRepo->getEntityArrayOnPage("codes", $page),
+            "lists"       => $contentsRepo->getEntityArrayOnPage("lists", $page),
         ];
         return $contents;
     }

@@ -1,0 +1,15 @@
+#image_1 {
+    margin: 15px;
+    width: 350px;
+    float: right;
+}
+
+#image_2 {
+    margin: 0 30px;
+    width: 300px;
+    float: left;
+}
+
+#bottom_paragraf {
+    margin-bottom: 250px;
+}

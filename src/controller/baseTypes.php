@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Demo\Controller;
 
 require_once "../../vendor/autoload.php";
@@ -12,7 +14,7 @@ use Demo\Service\Contents as ContentsService;
 $tunnelToDB = new ContentsService();
 $contents = $tunnelToDB->getContents(basename(__FILE__));
 
-$codes = $tunnelToDB->getEntityArray("codes");
+$codes = $contents["codes"];
 $codeProcessor = new CodeProcessor();
 $codes = $codeProcessor->processCodes($codes);
 
@@ -22,8 +24,6 @@ $twig = new \Twig_Environment($loader);
 echo $twig->render("baseTypes.tpl.twig", [
     "title"        => $contents["titles"][0]["title"],
     "header"       => $contents["titles"][0]["title"],
-    "article_1"    => "<h1>" . $contents["articles"][0]["article"] . "</h1>",
+    "article_1"    => $contents["articles"][0]["article"],
     "codes"        => $codes,
 ]);
-
-echo "<span style='text-decoration: underline'>161</span>";

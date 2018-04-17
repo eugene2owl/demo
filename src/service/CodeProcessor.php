@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Demo\Service;
 
 class CodeProcessor
@@ -8,7 +10,7 @@ class CodeProcessor
     private const FUNCTION_COLOR = "#2B50DE";
     private const VARIABLE_COLOR = "#E7A803";
 
-    private const STRING_REGEX = "/((\".+\")|('.+'))/";
+    private const STRING_REGEX = "/((\".*\")|('.*'))/";
     private const FUNCTION_REGEX = "/[a-zA-Z0-9_]+\(/";
     private const VARIABLE_REGEX = "/\$[a-zA-Z0-9_]+/";
 
