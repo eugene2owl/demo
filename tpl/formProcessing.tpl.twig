@@ -1,0 +1,91 @@
+{% extends "base.tpl.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="design/css/formProcessing.css">
+{% endblock %}
+
+{% block contents %}
+    <div id="form_1">
+        <form method="POST">
+            <div class="form-group">
+                <label for="name">Name </label>
+                <input type="text" id="name" name="name" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email </label>
+                <input type="email" id="email" name="email" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age </label>
+                <input type="text" id="age" name="age" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="identifier">Department id </label>
+                <input type="text" id="identifier" name="identifier" pattern="[A-Z]-([0-9]){3,3}" title="format example: A-111" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender </label>
+                <select name="gender" id="gender" class="form-control">
+                    <option value="male">male</option>
+                    <option value="female">female</option>
+                </select>
+            </div>
+
+            <input type="submit" value="Submit" class="btn btn-danger">
+        </form>
+    </div>
+
+    <div class="output formOutput">
+        {% for form_result in form_results %}
+            {% for form_result_point in form_result %}
+                {{ form_result_point|raw }}<br>
+            {%  endfor %}
+            <br>
+        {% endfor %}
+    </div>
+
+    <img id="image_1" src="design/images/moby.jpg" alt="">
+
+    <p>
+        {% for article in articles %}
+            <p>
+                {{ article.article }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+
+    </p>
+        {{ article_2 }}
+    <ol>
+        {% for code in codes %}
+            <li>
+                <pre>
+                    <div class="code">
+{{ code.code|raw }}
+                    </div>
+                </pre>
+                {% set key = 'form_processing_' ~ loop.index %}
+                <ul class="list-group list-group-flush">
+                    {% for point in lists[key] %}
+                        <li class="list-group-item">
+                            {{ point.element_text }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ol>
+    <h3 id="conclusion">{{ conclusion }}</h3>
+    <ol class="list-group">
+        {% for list in lists['form_processing_conclusion'] %}
+            <li class="list-group-item list-group-item-action list-group-item-info">
+                {{ list.element_text }}
+            </li>
+        {% endfor %}
+    </ol>
+{% endblock %}

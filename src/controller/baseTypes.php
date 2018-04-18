@@ -8,8 +8,8 @@ require_once "../../vendor/autoload.php";
 require_once "../service/Contents.php";
 require_once "../service/CodeProcessor.php";
 
-use Demo\Service\CodeProcessor;
 use Demo\Service\Contents as ContentsService;
+use Demo\Service\CodeProcessor;
 
 $tunnelToDB = new ContentsService();
 $contents = $tunnelToDB->getContents(basename(__FILE__));

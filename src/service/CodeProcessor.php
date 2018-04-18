@@ -8,11 +8,9 @@ class CodeProcessor
 {
     private const STRING_COLOR = "#FF3537";
     private const FUNCTION_COLOR = "#2B50DE";
-    private const VARIABLE_COLOR = "#E7A803";
 
     private const STRING_REGEX = "/((\".*\")|('.*'))/";
     private const FUNCTION_REGEX = "/[a-zA-Z0-9_]+\(/";
-    private const VARIABLE_REGEX = "/\$[a-zA-Z0-9_]+/";
 
     private function getEntranceArray(string $text, string $patternRegex): array
     {
@@ -64,11 +62,6 @@ class CodeProcessor
             $code,
             self::STRING_REGEX,
             "color: " . self::STRING_COLOR
-        );
-        $code = $this->wrapUpInSpan(
-            $code,
-            self::VARIABLE_REGEX,
-            "color: " . self::VARIABLE_REGEX
         );
         $code = $this->wrapUpInSpan(
             $code,
