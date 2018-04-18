@@ -1,0 +1,61 @@
+{% extends "base.tpl.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="design/css/DBInteraction.css" rel="stylesheet" />
+{% endblock %}
+
+{% block contents %}
+    <img id="image_1" src="design/images/birdy.jpg" alt="image :)">
+    {% for article in articles %}
+        <p>
+            {{ article.article }}
+        </p>
+        {% if loop.index == 2 %}
+            <ol class="list-group">
+                {% for list in lists if list.name == 'PDO_advantages' %}
+                    <li class="list-group-item list-group-item-action">
+                        {{ list.element_text }}
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+
+        {% if loop.index == 3 %}
+            <h3>
+                {{ header_1 }}
+            </h3>
+        {% endif %}
+
+        {% if loop.index == 5 %}
+            <pre>
+                <div class="code">
+{{ codes[0].code|raw }}
+                </div>
+                <div class="output">
+{{ codes[0].output|raw }}
+                </div>
+            </pre>
+        {% endif %}
+
+        {% if loop.index == 8 %}
+            <pre>
+                <div class="code">
+{{ codes[1].code|raw }}
+                </div>
+                <div class="output">
+{{ codes[1].output|raw }}
+                </div>
+            </pre>
+        {% endif %}
+
+        {% if loop.index == 9 %}
+            <pre>
+                <div class="code">
+{{ codes[2].code|raw }}
+                </div>
+            </pre>
+        {% endif %}
+
+    {% endfor %}
+{% endblock %}

@@ -6,6 +6,7 @@ namespace Demo\Service;
 
 class myPDO
 {
+    private const NO_CONNECTION = "Database is not available.";
     private static $dsn = null;
     private static $username = null;
     private static $password = null;
@@ -30,11 +31,16 @@ class myPDO
     {
         if (is_null(self::$connection)) {
             self::setParameters();
-            self::$connection = new \PDO(
-                self::$dsn,
-                self::$username,
-                self::$password
-            );
+            try {
+                self::$connection = new \PDO(
+                    self::$dsn,
+                    self::$username,
+                    self::$password
+                );
+            } catch (\Exception $exception) {
+                error_log($exception->getMessage());
+                die(self::NO_CONNECTION);
+            }
         }
         return self::$connection;
     }

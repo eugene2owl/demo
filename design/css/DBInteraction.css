@@ -1,0 +1,13 @@
+#image_1 {
+    width:300px;
+    margin: 25px;
+    float: right;
+}
+
+h3 {
+    text-align: center;
+}
+
+.output {
+    padding: 0 25px;
+}

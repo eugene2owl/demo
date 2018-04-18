@@ -20,6 +20,10 @@ input[type="submit"] {
     margin: 20px 0 40px 0;
 }
 
+.formOutput {
+    padding: 0 25px;
+}
+
 .list-group {
     margin-bottom: 100px;
 }
