@@ -9,7 +9,7 @@
     <img id="image_1" src="design/images/birdy.jpg" alt="image :)">
     {% for article in articles %}
         <p>
-            {{ article.article }}
+            {{ article.article|raw }}
         </p>
         {% if loop.index == 2 %}
             <ol class="list-group">

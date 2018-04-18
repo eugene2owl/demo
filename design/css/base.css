@@ -53,14 +53,14 @@ h1 {
 
 a {
     text-decoration: none;
-    color: #2B2B2B;
+    color: #2B50DE;
     font-style: italic;
+    font-weight: bold;
 }
 
 a:hover {
     text-decoration: none;
     color: #FF3537;
-    font-weight: bold;
 }
 
 .code {
