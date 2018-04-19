@@ -1,0 +1,32 @@
+html, body {
+    background-color: #192E53;
+}
+
+#wrapper {
+    background-color: #3F508F;
+}
+
+.list-group-item {
+    background-color: #161D5D;
+    color: #930D49;
+}
+
+.list-group-item:hover {
+    background-color: #161D5D;
+    color: #0C172B;
+}
+
+.btn {
+    background-color: #161D5D;
+    border: #3F508F;
+    color: #0C172B;
+}
+
+.btn:hover {
+    background-color: #0C172B;
+    color: #930D49;
+}
+
+h4 {
+    color: #0C172B;
+}

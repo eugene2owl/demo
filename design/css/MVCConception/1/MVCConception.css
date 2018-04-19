@@ -1,0 +1,31 @@
+html, body {
+    background-color: dimgray;
+}
+
+#wrapper {
+    background-color: #565656;
+}
+
+.list-group-item {
+    background-color: #AAAAAA;
+}
+
+.list-group-item:hover {
+    background-color: #AAAAAA;
+    color: black;
+}
+
+.btn {
+    background-color: #AAAAAA;
+    border: #373c3f;
+    color: black;
+}
+
+.btn:hover {
+    background-color: dimgray;
+    color: black;
+}
+
+h4 {
+    color: black;
+}

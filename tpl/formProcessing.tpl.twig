@@ -70,13 +70,13 @@
                     </div>
                 </pre>
                 {% set key = 'form_processing_' ~ loop.index %}
-                <ul class="list-group list-group-flush">
+                <ol>
                     {% for point in lists[key] %}
-                        <li class="list-group-item">
+                        <li>
                             {{ point.element_text }}
                         </li>
                     {% endfor %}
-                </ul>
+                </ol>
             </li>
         {% endfor %}
     </ol>

@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Demo\Service;
 
-
 class RegularExpresser
 {
     private const FUNCTION_REGEX = "/[a-zA-Z0-9_]+\(/";
