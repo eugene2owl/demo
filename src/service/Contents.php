@@ -10,23 +10,33 @@ use Demo\Repository\Contents as ContentsRepo;
 
 class Contents
 {
+    private $repository;
+
+    public function __construct()
+    {
+        $this->repository = new ContentsRepo();
+    }
+
     public function getContents(string $page): array
     {
-        $contentsRepo = new ContentsRepo();
         $contents = [
-            "titles"      => $contentsRepo->getEntityArrayOnPage("titles", $page),
-            "articles"    => $contentsRepo->getEntityArrayOnPage("articles", $page),
-            "images"      => $contentsRepo->getEntityArrayOnPage("images", $page),
-            "links"       => $contentsRepo->getEntityArrayOnPage("links", $page),
-            "codes"       => $contentsRepo->getEntityArrayOnPage("codes", $page),
-            "lists"       => $contentsRepo->getEntityArrayOnPage("lists", $page),
+            "titles"      => $this->repository->getEntityArrayOnPage("titles", $page),
+            "articles"    => $this->repository->getEntityArrayOnPage("articles", $page),
+            "images"      => $this->repository->getEntityArrayOnPage("images", $page),
+            "links"       => $this->repository->getEntityArrayOnPage("links", $page),
+            "codes"       => $this->repository->getEntityArrayOnPage("codes", $page),
+            "lists"       => $this->repository->getEntityArrayOnPage("lists", $page),
         ];
         return $contents;
     }
 
-    public function getEntityArray(string $name)
+    public function getEntityArray(string $name): array
     {
-        $contentsRepo = new ContentsRepo();
-        return $contentsRepo->getEntityArray($name);
+        return $this->repository->getEntityArray($name);
+    }
+
+    public function getEntityFromPage(string $pageName, string $entityName): array
+    {
+        return $this->repository->getEntityFromPage($pageName, $entityName);
     }
 }

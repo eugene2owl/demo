@@ -15,6 +15,11 @@ $tunnelToDB = new ContentsService();
 $contents = $tunnelToDB->getContents(basename(__FILE__));
 $titles = $tunnelToDB->getEntityArray("titles");
 
+/*              /                 */
+$newTitles = $tunnelToDB->getEntityFromPage(basename(__FILE__), "link");
+var_dump($newTitles);
+/*              /                 */
+
 $linkInserter = new LinkInserter();
 $links = [
     "MVC conception"                            => $titles[5]["page"],
