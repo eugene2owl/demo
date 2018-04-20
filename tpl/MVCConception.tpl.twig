@@ -7,16 +7,16 @@
 {% endblock %}
 
 {% block contents %}
-    <img id="image_1" src="design/images/space.jpg" alt="">
+    <img id="image_1" src="{{ image_1_src }}" alt="">
     {% for article in articles %}
         <p>
-            {{ article.article|raw }}
+            {{ article.name|raw }}
         </p>
         {% if loop.index == 2 %}
             <ol>
-                {% for list in lists if list.name == 'MVC_scenario' %}
+                {% for element in lists.0.elements %}
                     <li>
-                        {{ list.element_text }}
+                        {{ element.name }}
                     </li>
                 {% endfor %}
             </ol>
@@ -24,13 +24,13 @@
             <h3>{{ title_1 }}</h3>
 
             <ol class="list-group">
-                {% for list in lists if list.name == 'MVC_advantages' %}
+                {% for element in lists.1.elements %}
                     <li class="list-group-item list-group-item-action">
-                        {{ list.element_text }}
+                        {{ element.name }}
                     </li>
                 {% endfor %}
             </ol>
-            <img id="image_2" src="design/images/mountain.jpg" alt="image :)">
+            <img id="image_2" src="{{ image_2_src }}" alt="image :)">
         {% endif %}
     {% endfor %}
 
