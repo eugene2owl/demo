@@ -10,8 +10,8 @@
         {% include "partials/search.tpl.twig" %}
     {% endblock %}
     <div id="menu" class="btn-group-vertical" role="group">
-        {% for title in siteBar if title.title != "Demo" %}
-            <a class="btn btn-secondary" href="{{ title.page }}"> {{ title.title }}</a>
+        {% for couple in siteBar if couple.title != title %}
+            <a class="btn btn-secondary" href="{{ couple.page }}"> {{ couple.title }}</a>
         {% endfor %}
     </div>
     <p>
@@ -23,7 +23,7 @@
     </p>
     <ol>
         {% for source in sources %}
-            <li><a href="{{ source.link }}">{{ source.text }}</a> {{ source.describtion }}</li>
+            <li>{{ source.name|raw }}</li>
         {% endfor %}
     </ol>
 {% endblock %}

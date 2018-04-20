@@ -17,17 +17,17 @@ class LinkInserter
         return $text;
     }
 
-    public function insertLinksIntoArticles(array $links, array $articles): array
+    public function insertLinksIntoTexts(array $links, array $texts): array
     {
         foreach ($links as $pattern => $href) {
-            foreach ($articles as $number => $article) {
-                $articles[$number]["article"] = $this->insertLink(
-                    $article["article"],
+            foreach ($texts as $number => $text) {
+                $texts[$number]["name"] = $this->insertLink(
+                    $text["name"],
                     $pattern,
                     $href
                 );
             }
         }
-        return $articles;
+        return $texts;
     }
 }

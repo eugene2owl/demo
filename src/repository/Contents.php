@@ -50,12 +50,12 @@ class Contents
         return $statement->fetchAll();
     }
 
-    private function getPageId(string $pageName): int
+    private function getKnownEntityId(string $knownEntityName, string $knownEntity): int
     {
-        $tableName = $this->getTableName("pages", self::NEW_SCHEMA_NAME) . "_";
+        $tableName = $this->getTableName($knownEntity . "s", self::NEW_SCHEMA_NAME) . "_";
         $statement = $this->connection->prepare("SELECT `id` FROM " . $tableName . " WHERE `name` LIKE :name");
         $queryResult = $statement->execute([
-            "name" => $pageName
+            "name" => $knownEntityName
         ]);
         if (!$queryResult) {
             return -1;
@@ -64,56 +64,62 @@ class Contents
         return isset($pageId) ? intval($pageId) : -1;
     }
 
-    private function getEntityIds(int $pageId, string $entityName): array
+    private function getNeededEntityIds(int $knownEntityId, string $knownEntity, string $neededEntity): array
     {
-        $tableName = $this->getTableName($entityName . "_page_relation", self::NEW_SCHEMA_NAME);
-        $statement = $this->connection->prepare("SELECT " . $entityName . "_id" . " FROM " . $tableName . " WHERE `page_id` = :pageId");
+        $tableName = $this->getTableName($neededEntity . "_" . $knownEntity . "_relation", self::NEW_SCHEMA_NAME);
+        $statement = $this->connection->prepare("SELECT " . $neededEntity . "_id" . " FROM " . $tableName . " WHERE `" . $knownEntity . "_id` = :knownEntityId");
         $queryResult = $statement->execute([
-            "pageId"   => $pageId,
+            "knownEntityId"   => $knownEntityId,
         ]);
         if (!$queryResult) {
             return [];
         }
         $ids = [];
         foreach ($statement->fetchAll() as $entity) {
-            $ids[] = intval($entity[$entityName . "_id"]);
+            $ids[] = intval($entity[$neededEntity . "_id"]);
         }
         return $ids;
     }
 
-    private function getEntities(array $entityIds, string $entityName): array
+    private function getNeededEntities(array $neededEntityIds, string $neededEntity): array
     {
-        $tableName = $this->getTableName($entityName . "s", self::NEW_SCHEMA_NAME) . "_";
-        $statement = $this->connection->prepare("SELECT `name` FROM " . $tableName . " WHERE `id` = :entityId");
+        $tableName = $this->getTableName($neededEntity . "s", self::NEW_SCHEMA_NAME) . "_";
+        $statement = $this->connection->prepare("SELECT * FROM " . $tableName . " WHERE `id` = :entityId");
         $entities = [];
-        foreach ($entityIds as $entityId) {
+        foreach ($neededEntityIds as $number => $entityId) {
             $queryResult = $statement->execute([
                 "entityId" => $entityId,
             ]);
             if (!$queryResult) {
                 return [];
             }
-            $entities[] = $statement->fetchAll();
+            $entities[] = $statement->fetchAll()[0];
         }
         return $entities;
     }
 
-    public function getEntityFromPage(string $pageName, string $entityName): array
+    public function getSpouse(string $knownEntityName, string $knownEntity, string $neededEntity): array
     {
-        if (-1 === $pageId = $this->getPageId($pageName)) {
+        if (-1 === $knownEntityId = $this->getKnownEntityId($knownEntityName, $knownEntity)) { //просто page меняем на имя сущности
             return [];
         }
 
-        $entityIds = $this->getEntityIds($pageId, $entityName);
+        $neededEntityIds = $this->getNeededEntityIds($knownEntityId, $knownEntity, $neededEntity); // такая же ерунда
 
-        $entities = $this->getEntities($entityIds, $entityName);
+        $neededEntities = $this->getNeededEntities($neededEntityIds, $neededEntity);
 
-        return $entities;
+        return $neededEntities;
     }
 
-    public function getSpouse(): array
+    public function getEntity(string $entity): array
     {
-        // сюда летит имя списка, я получаю массив его элементов. летит имя кода, я получаю массив его абзацев
-        // летит абзац, я получаю массив его кодов
+        $tableName = $this->getTableName($entity, SELF::NEW_SCHEMA_NAME) . "s_";
+        $sql = "SELECT * FROM " . $tableName . " LIMIT 300";
+        $statement = $this->connection->prepare($sql);
+        $querySuccess = $statement->execute();
+        if (!$querySuccess) {
+            return [];
+        }
+        return $statement->fetchAll();
     }
 }

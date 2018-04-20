@@ -20,7 +20,7 @@ $linkInserter = new LinkInserter();
 $links = [
 
 ];
-$contents["articles"] = $linkInserter->insertLinksIntoArticles($links, $contents["articles"]);
+$contents["articles"] = $linkInserter->insertLinksIntoTextes($links, $contents["articles"]);
 
 $styleChanger = new StyleChanger();
 $radiobuttonValues = $styleChanger->getRadiobuttonValues();

@@ -31,7 +31,7 @@ $links = [
     "query\(\)"      => $contents["links"][4]["link"],
     "exec\(\)"       => $contents["links"][5]["link"],
 ];
-$contents["articles"] = $linkInserter->insertLinksIntoArticles($links, $contents["articles"]);
+$contents["articles"] = $linkInserter->insertLinksIntoTextes($links, $contents["articles"]);
 
 $loader = new \Twig_Loader_Filesystem("../../tpl");
 $twig = new \Twig_Environment($loader);

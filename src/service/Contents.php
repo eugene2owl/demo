@@ -17,26 +17,51 @@ class Contents
         $this->repository = new ContentsRepo();
     }
 
-    public function getContents(string $page): array
+    public function getContentsFromPage(string $pageName): array
     {
         $contents = [
-            "titles"      => $this->repository->getEntityArrayOnPage("titles", $page),
-            "articles"    => $this->repository->getEntityArrayOnPage("articles", $page),
-            "images"      => $this->repository->getEntityArrayOnPage("images", $page),
-            "links"       => $this->repository->getEntityArrayOnPage("links", $page),
-            "codes"       => $this->repository->getEntityArrayOnPage("codes", $page),
-            "lists"       => $this->repository->getEntityArrayOnPage("lists", $page),
+            "titles"      => $this->repository->getSpouse($pageName, "page", "title"),
+            "articles"    => $this->repository->getSpouse($pageName, "page", "article"),
+            "images"      => $this->repository->getSpouse($pageName, "page", "image"),
+            "links"       => $this->repository->getSpouse($pageName, "page", "link"),
+            "codes"       => $this->repository->getSpouse($pageName, "page", "code"),
+            "lists"       => $this->repository->getSpouse($pageName, "page", "list"),
         ];
         return $contents;
     }
 
-    public function getEntityArray(string $name): array
+    public function getSpouse(string $knownEntityName, string $knownEntity, string $neededEntity): array
     {
-        return $this->repository->getEntityArray($name);
+        return $this->repository->getSpouse($knownEntityName, $knownEntity, $neededEntity);
     }
 
-    public function getEntityFromPage(string $pageName, string $entityName): array
+    public function getEntity(string $entity): array
     {
-        return $this->repository->getEntityFromPage($pageName, $entityName);
+        return $this->repository->getEntity($entity);
+    }
+
+    public function getPageTitleCouples(): array
+    {
+        $pages = $this->repository->getEntity("page");
+        $titles = [];
+        foreach ($pages as $number => $page) {
+            $titles[] = $this->getSpouse($page["name"], "page", "title");
+        }
+        $pageTitleCouples = [];
+        foreach ($titles as $number => $title) {
+            $pageTitleCouples[$number]["page"] = $pages[$number]["name"];
+            $pageTitleCouples[$number]["title"] = $title[0]["name"];
+        }
+        return $pageTitleCouples;
+    }
+
+    public function getLinksAssociationsFromPage(string $pageName): array
+    {
+        $links = $this->getSpouse($pageName, "page", "link");
+        $linkToSourceCouples = [];
+        foreach ($links as $number => $link) {
+            $linkToSourceCouples[$link["text"]] = $link["name"];
+        }
+        return $linkToSourceCouples;
     }
 }
