@@ -6,23 +6,23 @@
 {% endblock %}
 
 {% block contents %}
-    <img id="image_1" src="design/images/blue.jpg" alt="image">
+    <img id="image_1" src="{{ image_1_src }}" alt="image">
     <p>
         {{ article_1 }}
     </p>
     <ol>
         {% for code in codes %}
             <li>
-                <p>{{ code.introduction }}</p>
+                <p>{{ code.articles.0.name }}</p>
                 <pre>
                     <div class="code">
-{{ code.code|raw }}
+{{ code.code.name|raw }}
                     </div>
                     <div class="code output">
-{{ code.output|raw }}
+{{ code.code.output|raw }}
                     </div>
                 </pre>
-                <p>{{ code.conclusion }}</p>
+                <p>{{ code.articles.1.name }}</p>
             </li>
         {% endfor %}
     </ol>

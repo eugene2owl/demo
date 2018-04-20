@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Demo\Controller;
 
+require_once "const.php";
 require_once "../../vendor/autoload.php";
 require_once "../service/Contents.php";
 require_once "../service/LinkInserter.php";
@@ -34,7 +35,7 @@ $innerLinks = [
 $elements = $linkInserter->insertLinksIntoTexts($externalLinks, $elements);
 $pageContents["articles"] = $linkInserter->insertLinksIntoTexts($innerLinks, $pageContents["articles"]);
 
-$loader = new \Twig_Loader_Filesystem("../../tpl/");
+$loader = new \Twig_Loader_Filesystem(TEMPLATES_PATH_FOR_TWIG);
 $twig = new \Twig_Environment($loader);
 
 echo $twig->render("index.tpl.twig", [
@@ -44,4 +45,6 @@ echo $twig->render("index.tpl.twig", [
     "article_1"     => $pageContents["articles"][0]["name"],
     "article_2"     => $pageContents["articles"][1]["name"],
     "sources"       => $elements,
+    "image_1_src"   => IMAGES_FOLDER_PATH . $pageContents["images"][0]["name"],
+    "up_url"        => basename(__FILE__),
 ]);

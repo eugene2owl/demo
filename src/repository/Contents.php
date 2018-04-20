@@ -10,8 +10,10 @@ use Demo\Service\myPDO;
 
 class Contents
 {
-    private const SCHEMA_NAME = "contents";
-    private const NEW_SCHEMA_NAME = "demo";
+    private const SCHEMA_NAME = "demo";
+    private const ENTITY_TABLE_POSTFIX = "s_";
+    private const BRIDGE = "_";
+    private const RELATION_TABLE_POSTFIX = "_relation";
     private $connection;
 
     public function __construct()
@@ -19,74 +21,68 @@ class Contents
         $this->connection = myPDO::getConnection();
     }
 
-    private function getTableName(string $entityName, string $schema = self::SCHEMA_NAME): string
+    private function getEntityTableName(string $entityName, string $schema = self::SCHEMA_NAME): string
     {
-        return "$schema.$entityName";
+        return "$schema.$entityName" . self::ENTITY_TABLE_POSTFIX;
     }
 
-    public function getEntityArray(string $name): array
+    private function getRelationTableName(string $firstEntityName, string $secondEntityName, string $schema = self::SCHEMA_NAME): string
     {
-        $tableName = $this->getTableName($name);
-        $sql = "SELECT * FROM " . $tableName . " LIMIT 300";
-        $statement = $this->connection->prepare($sql);
-        $querySuccess = $statement->execute();
-        if (!$querySuccess) {
-            return [];
-        }
-        return $statement->fetchAll();
-    }
-
-    public function getEntityArrayOnPage(string $name, string $page): array
-    {
-        $tableName = $this->getTableName($name);
-        $sql = "SELECT * FROM " . $tableName . " WHERE `page` = :page LIMIT 300";
-        $statement = $this->connection->prepare($sql);
-        $querySuccess = $statement->execute([
-            "page" => $page,
-        ]);
-        if (!$querySuccess) {
-            return [];
-        }
-        return $statement->fetchAll();
+        return "$schema.$firstEntityName" . self::BRIDGE . $secondEntityName . self::RELATION_TABLE_POSTFIX;
     }
 
     private function getKnownEntityId(string $knownEntityName, string $knownEntity): int
     {
-        $tableName = $this->getTableName($knownEntity . "s", self::NEW_SCHEMA_NAME) . "_";
-        $statement = $this->connection->prepare("SELECT `id` FROM " . $tableName . " WHERE `name` LIKE :name");
+        $tableName = $this->getEntityTableName($knownEntity);
+        $statement = $this->connection->prepare(
+            "SELECT `id` FROM " .
+            $tableName .
+            " WHERE `name` LIKE :name"
+        );
         $queryResult = $statement->execute([
             "name" => $knownEntityName
         ]);
         if (!$queryResult) {
             return -1;
         }
-        $pageId = $statement->fetch()["id"];
-        return isset($pageId) ? intval($pageId) : -1;
+        $knownEntityId = $statement->fetch()["id"];
+        return isset($knownEntityId) ? intval($knownEntityId) : -1;
     }
 
     private function getNeededEntityIds(int $knownEntityId, string $knownEntity, string $neededEntity): array
     {
-        $tableName = $this->getTableName($neededEntity . "_" . $knownEntity . "_relation", self::NEW_SCHEMA_NAME);
-        $statement = $this->connection->prepare("SELECT " . $neededEntity . "_id" . " FROM " . $tableName . " WHERE `" . $knownEntity . "_id` = :knownEntityId");
+        $tableName = $this->getRelationTableName($neededEntity, $knownEntity);
+        $statement = $this->connection->prepare(
+            "SELECT `" .
+            $neededEntity . "_id`" .
+            " FROM " .
+            $tableName .
+            " WHERE `" .
+            $knownEntity . "_id` = :knownEntityId"
+        );
         $queryResult = $statement->execute([
             "knownEntityId"   => $knownEntityId,
         ]);
         if (!$queryResult) {
             return [];
         }
-        $ids = [];
+        $neededEntityIds = [];
         foreach ($statement->fetchAll() as $entity) {
-            $ids[] = intval($entity[$neededEntity . "_id"]);
+            $neededEntityIds[] = intval($entity[$neededEntity . "_id"]);
         }
-        return $ids;
+        return $neededEntityIds;
     }
 
     private function getNeededEntities(array $neededEntityIds, string $neededEntity): array
     {
-        $tableName = $this->getTableName($neededEntity . "s", self::NEW_SCHEMA_NAME) . "_";
-        $statement = $this->connection->prepare("SELECT * FROM " . $tableName . " WHERE `id` = :entityId");
+        $tableName = $this->getEntityTableName($neededEntity);
+        $statement = $this->connection->prepare(
+            "SELECT * FROM " .
+            $tableName .
+            " WHERE `id` = :entityId"
+        );
         $entities = [];
-        foreach ($neededEntityIds as $number => $entityId) {
+        foreach ($neededEntityIds as $entityId) {
             $queryResult = $statement->execute([
                 "entityId" => $entityId,
             ]);
@@ -98,14 +94,12 @@ class Contents
         return $entities;
     }
 
-    public function getSpouse(string $knownEntityName, string $knownEntity, string $neededEntity): array
+    public function getSpouses(string $knownEntityName, string $knownEntity, string $neededEntity): array
     {
-        if (-1 === $knownEntityId = $this->getKnownEntityId($knownEntityName, $knownEntity)) { //просто page меняем на имя сущности
+        if (-1 === $knownEntityId = $this->getKnownEntityId($knownEntityName, $knownEntity)) {
             return [];
         }
-
-        $neededEntityIds = $this->getNeededEntityIds($knownEntityId, $knownEntity, $neededEntity); // такая же ерунда
-
+        $neededEntityIds = $this->getNeededEntityIds($knownEntityId, $knownEntity, $neededEntity);
         $neededEntities = $this->getNeededEntities($neededEntityIds, $neededEntity);
 
         return $neededEntities;
@@ -113,7 +107,7 @@ class Contents
 
     public function getEntity(string $entity): array
     {
-        $tableName = $this->getTableName($entity, SELF::NEW_SCHEMA_NAME) . "s_";
+        $tableName = $this->getEntityTableName($entity);
         $sql = "SELECT * FROM " . $tableName . " LIMIT 300";
         $statement = $this->connection->prepare($sql);
         $querySuccess = $statement->execute();

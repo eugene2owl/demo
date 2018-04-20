@@ -36,7 +36,7 @@ class CodeProcessor
         $output = $regularExpresser->wrapUpInSpan(
             $output,
             self::STRING_REGEX,
-            "color: #FF3537"
+            "color: " . self::STRING_COLOR
         );
         return $output;
     }
@@ -45,8 +45,8 @@ class CodeProcessor
     {
         $regExer = new RegExer();
         foreach ($codes as $number => $code) {
-            $codes[$number]["code"] = $this->processCode($code["code"], $regExer);
-            $codes[$number]["output"] = $this->processOutput($code["output"], $regExer);
+            $codes[$number]["code"]["name"] = $this->processCode($code["code"]["name"], $regExer);
+            $codes[$number]["code"]["output"] = $this->processOutput($code["code"]["output"], $regExer);
         }
         return $codes;
     }

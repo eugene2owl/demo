@@ -50,41 +50,38 @@
 
     <img id="image_1" src="design/images/moby.jpg" alt="">
 
-    <p>
-        {% for article in articles %}
-            <p>
-                {{ article.article }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
+    {% for article in articles %}
+        <p>
+            {{ article.name }}
+        </p>
+    {% endfor %}
 
-    </p>
-        {{ article_2 }}
     <ol>
         {% for code in codes %}
             <li>
                 <pre>
                     <div class="code">
-{{ code.code|raw }}
+{{ code.code.name|raw }}
                     </div>
                 </pre>
-                {% set key = 'form_processing_' ~ loop.index %}
                 <ol>
-                    {% for point in lists[key] %}
-                        <li>
-                            {{ point.element_text }}
-                        </li>
+                    {% for list in code.lists %}
+                        {% for element in list.elements %}
+                            <li>
+                                {{ element.name }}
+                            </li>
+                        {% endfor %}
                     {% endfor %}
                 </ol>
             </li>
         {% endfor %}
     </ol>
+
     <h3 id="conclusion">{{ conclusion }}</h3>
     <ol class="list-group">
-        {% for list in lists['form_processing_conclusion'] %}
-            <li class="list-group-item list-group-item-action list-group-item-info">
-                {{ list.element_text }}
+        {% for element in conclusionList.elements %}
+            <li class="list-group-item list-group-item-action list-group-item">
+                {{ element.name }}
             </li>
         {% endfor %}
     </ol>

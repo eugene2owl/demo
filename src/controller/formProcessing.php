@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Demo\Controller;
 
+require_once "const.php";
 require_once "../../vendor/autoload.php";
 require_once "../service/Contents.php";
 require_once "../service/CodeProcessor.php";
@@ -16,28 +17,29 @@ use Demo\Service\FormProcessorDemo;
 use Demo\Service\ListProcessor;
 
 $tunnelToDB = new ContentsService();
-$contents = $tunnelToDB->getContents(basename(__FILE__));
+$pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
 
-$codes = $contents["codes"];
+$codes = $tunnelToDB->getCodesWithAttachmentsFromPage(basename(__FILE__));
 $codeProcessor = new CodeProcessor();
 $codes = $codeProcessor->processCodes($codes);
 
-$lists = $contents["lists"];
 $listProcessor = new ListProcessor();
-$lists = $listProcessor->distributeLists($lists);
+$codes = $listProcessor->clarifyCodesLists($codes);
+
+$conclusionList = $listProcessor->clarifyList($pageContents["lists"][5]);
 
 $formProcessor = new FormProcessorDemo();
 $formResults = $formProcessor->getFormResults();
 
-$loader = new \Twig_Loader_Filesystem("../../tpl");
+$loader = new \Twig_Loader_Filesystem(TEMPLATES_PATH_FOR_TWIG);
 $twig = new \Twig_Environment($loader);
 
 echo $twig->render("formProcessing.tpl.twig", [
-    "title"        => $contents["titles"][0]["title"],
-    "header"       => $contents["titles"][0]["title"],
-    "articles"     => $contents["articles"],
-    "form_results" => $formResults,
-    "codes"        => $codes,
-    "lists"        => $lists,
-    "conclusion"   => "Summing up form processing rules"
+    "title"             => $pageContents["titles"][0]["name"],
+    "header"            => $pageContents["titles"][0]["name"],
+    "articles"          => $pageContents["articles"],
+    "form_results"      => $formResults,
+    "codes"             => $codes,
+    "conclusion"        => $pageContents["titles"][1]["name"],
+    "conclusionList"    => $conclusionList,
 ]);
