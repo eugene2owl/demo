@@ -7,35 +7,44 @@
 
 {% block contents %}
     <img id="image_1" src="design/images/purple.jpg" alt="image :)">
-    {% for article in articles if article.id < 6 %}
-        <p>{{ article.article }}</p>
+    {% for article in articles if article != articles|last %}
+        <p>{{ article.name }}</p>
     {% endfor %}
+
     <ol>
     {% for code in codes %}
         <li>
-            <p>{{ code.introduction }}</p>
             <pre>
-                    <div class="code">
-{{ code.code|raw }}
-                    </div>
-                </pre>
-            <p>{{ code.conclusion }}</p>
-        </li>
-        {% if loop.index == 1 %}
+                <div class="code">
+{{ code.code.name|raw }}
+                </div>
+            </pre>
+
             <div class="list-group">
                 <ul>
-                    {% for list in lists if list.name == "function_refactoring" %}
-                        <li class="list-group-item flex-column align-items-start">
-                            {{ list.element_text }}
-                        </li>
+                    {% for list in code.lists %}
+                        {% for element in list.elements %}
+                            <li class="list-group-item flex-column align-items-start">
+                                {{ element.name }}
+                            </li>
+                        {% endfor %}
                     {% endfor %}
                 </ul>
             </div>
-        {% endif %}
+
+            <p>
+                {% for article in code.articles %}
+                    {{ article.name }}
+                {% endfor %}
+            </p>
+        </li>
     {% endfor %}
     </ol>
+
     <img id="image_2" src="design/images/purple2.jpg" alt="image :)">
+
     <p id="bottom_paragraf">
-        {{ articles.2.article }}
+        {% set lastArticle = articles|last %}
+        {{ lastArticle.name }}
     </p>
 {% endblock %}
