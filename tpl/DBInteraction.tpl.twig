@@ -9,13 +9,13 @@
     <img id="image_1" src="design/images/birdy.jpg" alt="image :)">
     {% for article in articles %}
         <p>
-            {{ article.article|raw }}
+            {{ article.name|raw }}
         </p>
         {% if loop.index == 2 %}
             <ol class="list-group">
-                {% for list in lists if list.name == 'PDO_advantages' %}
+                {% for element in lists.0.elements %}
                     <li class="list-group-item list-group-item-action">
-                        {{ list.element_text }}
+                        {{ element.name }}
                     </li>
                 {% endfor %}
             </ol>
@@ -30,10 +30,10 @@
         {% if loop.index == 5 %}
             <pre>
                 <div class="code">
-{{ codes[0].code|raw }}
+{{ codes[0].code.name|raw }}
                 </div>
                 <div class="output">
-{{ codes[0].output|raw }}
+{{ codes[0].code.output|raw }}
                 </div>
             </pre>
         {% endif %}
@@ -41,10 +41,10 @@
         {% if loop.index == 8 %}
             <pre>
                 <div class="code">
-{{ codes[1].code|raw }}
+{{ codes[1].code.name|raw }}
                 </div>
                 <div class="output">
-{{ codes[1].output|raw }}
+{{ codes[1].code.output|raw }}
                 </div>
             </pre>
         {% endif %}
@@ -52,7 +52,7 @@
         {% if loop.index == 9 %}
             <pre>
                 <div class="code">
-{{ codes[2].code|raw }}
+{{ codes[2].code.name|raw }}
                 </div>
             </pre>
         {% endif %}

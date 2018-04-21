@@ -20,6 +20,12 @@
                 </div>
             </pre>
 
+            {% for article in code.articles %}
+                <p>
+                    {{ article.name }}
+                </p>
+            {% endfor %}
+
             <div class="list-group">
                 <ul>
                     {% for list in code.lists %}
@@ -32,11 +38,6 @@
                 </ul>
             </div>
 
-            <p>
-                {% for article in code.articles %}
-                    {{ article.name }}
-                {% endfor %}
-            </p>
         </li>
     {% endfor %}
     </ol>
