@@ -1,0 +1,88 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-size: 23px;
+    color: black;
+    background-color: #883DAB;
+}
+
+p {
+    text-indent: 40px;
+}
+
+h3 {
+    text-align: center;
+}
+
+#wrapper {
+    margin: auto;
+    padding: 50px;
+    width: 1100px;
+    min-height: 885px;
+    background-color: #EAE3D6;
+}
+
+#contents {
+    margin: 50px;
+}
+
+#contacts {
+    margin-top: 100px;
+    color: #2B50DE;
+    text-align: center;
+}
+
+#contacts .btn{
+    width: 300px;
+    margin: auto;
+}
+
+#contacts .form-control-plaintext {
+    width: 400px;
+}
+
+#toMain {
+    margin-top: 50px;
+    text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    color: #2B50DE;
+    font-style: italic;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: none;
+    color: #FF3537;
+}
+
+.code {
+    overflow: auto;
+    padding: 0 20px;
+    color: #9CA9A9;
+    background-color: #212529;
+}
+
+.output {
+    color: #212529;
+    background-color: #9CA9A9;
+}
+
+pre {
+    margin-bottom: 0;
+}
+
+.list-group {
+    margin: 30px 0;
+}

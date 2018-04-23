@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('input[name=styleMode]').change(function(){
+    $('input[type=radio]').change(function(){
         $('form').submit();
     });
 });

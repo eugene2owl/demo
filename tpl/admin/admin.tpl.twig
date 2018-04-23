@@ -1,0 +1,50 @@
+{% extends "baseAdmin.tpl.twig" %}
+
+{% block contents %}
+
+<ol>
+    <form method="POST">
+        <input type="submit" value="Go to dev." name="switcher">
+    </form>
+
+    {% for code in codes %}
+        <li>
+            <pre>
+                <div class="code">
+{{ code.code.name|raw }}
+                </div>
+
+                <div class="code output">
+{{ code.code.output|raw }}
+                </div>
+            </pre>
+
+            <ol>
+                {% for article in code.articles %}
+                    <li>
+                        <p>
+                            {{ article.name }}
+                        </p>
+                    </li>
+                {% endfor %}
+            </ol>
+
+            <ol>
+                {% for list in code.lists %}
+                    <li>
+                        <h4>{{ list.name }}</h4>
+                        <ol>
+                            {% for element in list.elements %}
+                                <li>
+                                    {{ element.name }}
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    </li>
+                {% endfor %}
+            </ol>
+        </li>
+    {% endfor %}
+</ol>
+
+{% endblock %}

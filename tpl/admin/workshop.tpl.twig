@@ -1,0 +1,40 @@
+{% extends "baseAdmin.tpl.twig" %}
+
+{% block contents %}
+    <form method="POST">
+        {% for available_mode in available_modes %}
+            <label for="{{ available_mode }}">{{ available_mode }}</label>
+            <input
+                    type="radio"
+                    value="{{ loop.index }}"
+                    name="main_option"
+                    id="{{ available_mode }}"
+                    {{ (mode == loop.index) ? 'checked' : '' }}
+            >
+        {% endfor %}
+        <br>
+        {% if mode == 1 %}
+            {% for available_add_mode in available_add_modes %}
+                <label for="add{{ available_add_mode }}">{{ available_add_mode }}</label>
+                <input
+                    type="radio"
+                    value="{{ loop.index }}"
+                    name="add_option"
+                    id="add{{ available_add_mode }}"
+                    {{ (add_mode == loop.index) ? 'checked' : '' }}
+                >
+            {% endfor %}
+        {% endif %}
+    </form>
+    <p>
+        Option mode is {{ mode }}
+    </p>
+    <p>
+        Adding mode is {{ add_mode }}
+    </p>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="design/js/radioSubmit.js"></script>
+{% endblock %}

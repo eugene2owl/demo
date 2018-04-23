@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block bootstrap %}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    {% endblock %}
+
+    {% block stylesheets %}
+        <link href="design/css/baseAdmin.css" rel="stylesheet"/>
+    {% endblock %}
+    {% block title %}
+        <title>
+            {{ title }}
+        </title>
+    {% endblock %}
+</head>
+<body>
+<div id="wrapper">
+    {% block header %}
+        <h1>
+            {{ header }}
+        </h1>
+    {% endblock %}
+    <div id="contents">
+        {% block contents %}{%  endblock %}
+    </div>
+    {% block toMain %}
+        <div id="toMain">
+            <a class="btn btn-primary" href="index.php">To main</a>
+        </div>
+    {% endblock %}
+
+</div>
+</body>
+</html>
+
+{% block javascripts %}
+    <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+{% endblock %}
