@@ -20,7 +20,7 @@ $tunnelToDB = new ContentsService();
 $pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
 $pageTitleCouples = $tunnelToDB->getPageTitleCouples();
 
-$codes = $tunnelToDB->getCodesWithAttachmentsFromPage(basename(__FILE__));;
+$codes = $tunnelToDB->getCodesWithAttachmentsFromPage(basename(__FILE__));
 $codeProcessor = new CodeProcessor();
 $codes = $codeProcessor->processCodes($codes);
 

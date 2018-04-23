@@ -1,0 +1,37 @@
+{% extends "base.tpl.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="design/css/DBDesign.css" rel="stylesheet" />
+{% endblock %}
+
+{% block contents %}
+    <img id="image_1" src="{{ image_1_src }}" alt="image :)">
+    {% for article in articles %}
+        <p>
+            {{ article.name|raw }}
+        </p>
+
+        {% if loop.index == 2 %}
+            <ol class="list-group">
+                {% for element in DBPrinciples %}
+                    <li class="list-group-item list-group-item-action">
+                        {{ element.name }}
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+
+        {% if loop.index == 4 %}
+            <ol class="list-group">
+                {% for element in DBDesignAdvices %}
+                    <li class="list-group-item list-group-item-action">
+                        {{ element.name }}
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+
+    {% endfor %}
+    <img id="image_schema" src="{{ image_schema }}" alt="schema">
+{% endblock %}
