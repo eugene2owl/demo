@@ -1,0 +1,18 @@
+{% for available_adding_mode in available_adding_modes %}
+    <label for="add{{ available_adding_mode }}">{{ available_adding_mode }}</label>
+    <input
+            type="radio"
+            value="{{ loop.index }}"
+            name="add_option"
+            id="add{{ available_adding_mode }}"
+            {{ (adding_mode == loop.index) ? 'checked' : '' }}
+    >
+{% endfor %}
+
+{% if adding_mode == 1 %}
+    {% include "admin_adding_mode_1.tpl.twig" %}
+{% endif %}
+
+{% if adding_mode == 2 %}
+    {% include "admin_adding_mode_2.tpl.twig" %}
+{% endif %}

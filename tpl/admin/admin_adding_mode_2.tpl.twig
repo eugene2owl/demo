@@ -1,0 +1,16 @@
+<div>
+    <label for="articlearea">Article</label>
+    <textarea name="attaching_article" id="articlearea" cols="30" rows="10" pettern = "((.){5,})">{{ attaching_article }}</textarea>
+</div>
+
+<div>
+    <label for="codepatternarea">Code</label>
+    <textarea name="code_pattern" id="codepatternarea" cols="30" rows="10" placeholder="code">{{ searching_code }}</textarea>
+</div>
+
+<div>
+    <input type="submit" value="find code" name="find_code">
+    <input type="submit" value="attach" name="article_attachment_submit">
+</div>
+
+{{ (was_article_attached) ? 'Article was attached' : '' }}
