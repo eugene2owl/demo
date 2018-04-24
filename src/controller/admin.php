@@ -22,7 +22,4 @@ list($templateName, $parameters) = $adminProcessor->getTemplateNameWithParameter
 $loader = new \Twig_Loader_Filesystem(TEMPLATES_PATH_FOR_TWIG . ADMIN_TEMPLATE_DIR);
 $twig = new \Twig_Environment($loader);
 
-var_dump($_POST["main_option"]);
-var_dump($_POST["add_option"]);
-
 echo $twig->render($templateName, $parameters);

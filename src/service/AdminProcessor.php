@@ -17,16 +17,6 @@ use Demo\Service\ListProcessor;
 class AdminProcessor
 {
     private $pageName;
-    // принимает пост со страницы
-    // возвращает имя рендеримой страницы и параметры для отображения
-    // Если была нажата кнопка "dev", то возвращает страницу для development-а.
-    // Иначе - обычную страницу
-
-    // Если прилетают данные с dev-страницы, смотрит, что это за радио: добавление / редактирование / удаление
-    // Возрвращает имя нужного шаблона и параметры поста, которые в нём (пустые первый раз)
-    // сразу выбран код и можно выбрать другую радио
-    // Если прилетает первая радио и add кода и вывода, добавляет код с выводом в БД
-    // если прилетает вторая радио, то возвращает шаблон для добавления attachment-ов (пока просто абзаца)
     public function __construct(string $pageName = "admin.php")
     {
         $this->pageName = $pageName;
@@ -54,17 +44,6 @@ class AdminProcessor
         ];
     }
 
-    private function validateAddingCode(?string $code): ?string
-    {
-        if (!isset($code)) {
-            return null;
-        }
-        if (strlen($code) > 1) {
-            return $code;
-        }
-        return null;
-    }
-
     private function getAvailableMainModes(): array
     {
         return [
@@ -79,14 +58,6 @@ class AdminProcessor
         return [
             1 => "add code",
             2 => "add attachment",
-        ];
-    }
-
-    private function getAvailableArticleAttachingModes(): array
-    {
-        return [
-            1 => "find code",
-            2 => "attach to code",
         ];
     }
 
@@ -118,41 +89,79 @@ class AdminProcessor
             is_string($inputedcode) &&
             strlen($inputedcode) > 2
         ) {
-            return htmlentities($inputedcode);
+            return filter_var($inputedcode, FILTER_SANITIZE_STRING);
         }
         return "";
     }
 
-    private function wasActionCanceled(?string $cancel): bool
+    private function wasActionSubmited(?string $buttonName): bool
     {
-        return isset($cancel);
+        return isset($buttonName);
     }
 
-    private function getCurrentAttachedArticle(?string $inputedArticle): ?string
+    private function getCurrentAttachedArticle(?string $inputedArticle): string
     {
         if (
             is_string($inputedArticle) &&
             strlen($inputedArticle) > 2
         ) {
-            return htmlentities($inputedArticle);
+            return filter_var($inputedArticle, FILTER_SANITIZE_STRING);
         }
-        return null;
+        return "";
     }
 
-    private function wasArticleAttachmentSubmitted(?string $attaching): bool
-    {
-        return isset($attaching);
-    }
-
-    private function getCurrentSearchingCode(?string $inputedPattern): ?string
+    private function getCurrentSearchingCode(?string $inputedPattern): string
     {
         if (
             is_string($inputedPattern) &&
             strlen($inputedPattern) > 2
         ) {
-            return htmlentities("needed code.");
+            return filter_var($inputedPattern, FILTER_SANITIZE_STRING);
         }
-        return null;
+        return "";
+    }
+
+    private function showJSMessage(string $message): void
+    {
+        echo "<script> alert('$message') </script>";
+    }
+
+    private function showUserSubmitWarnings(?string $inputedArticle, ?string $inputedCodePattern): bool
+    {
+        if (empty($this->getCurrentAttachedArticle($inputedArticle))) {
+            $messageList[] = "Article is not valid.";
+        }
+        if (empty($this->getCurrentSearchingCode($inputedCodePattern))) {
+            $messageList[] = "Code is not valid.";
+        }
+        if (!empty($messageList)) {
+            $this->showJSMessage(implode("\\n", $messageList));
+            return false;
+        }
+        return true;
+    }
+
+    private function showUserSearchWarnings(?string $inputedCodePattern): bool
+    {
+        if (empty($this->getCurrentSearchingCode($inputedCodePattern))) {
+            $this->showJSMessage("No code found.");
+            return false;
+        }
+        return true;
+    }
+
+    private function getSubmitAvailability(?string $searchClick, ?string $inputedArticle, ?string $inputedCodePattern): bool
+    {
+        if (!isset($searchClick)) {
+            return false;
+        }
+        if (empty($this->getCurrentAttachedArticle($inputedArticle))) {
+            return false;
+        }
+        if (empty($this->getCurrentSearchingCode($inputedCodePattern))) {
+            return false;
+        }
+        return true;
     }
 
     private function getAdminPage(): array
@@ -164,28 +173,47 @@ class AdminProcessor
         $addingMode = $this->getCurrentAddingMode($_POST["add_option"]);
 
         $currentAddingCode = $this->getCurrentAddingCode($_POST["code"]);
-        $wasCodeCreated = !empty($currentAddingCode) && !$this->wasActionCanceled($_POST["code_create_cancel"]);
+        $wasCodeCreated = !empty($currentAddingCode) && !$this->wasActionSubmited($_POST["code_create_cancel"]);
 
-        $currentArticle = $this->getCurrentAttachedArticle($_POST["attaching_article"]) ?? "article is not valid.";
-        $currentSearchingCode = $this->getCurrentSearchingCode($_POST["code_pattern"]) ?? "no code found.";
+        $currentArticle = $this->getCurrentAttachedArticle($_POST["attaching_article"]);
+        $currentSearchingCode = $this->getCurrentSearchingCode($_POST["code_pattern"]);
         $wasArticleAttached = (
-            $currentArticle !== "article is not valid." &&
-            $currentSearchingCode !== "no code found." &&
-            $this->wasArticleAttachmentSubmitted($_POST["article_attachment_submit"])
+            !empty($currentArticle) &&
+            !empty($currentSearchingCode) &&
+            $this->wasActionSubmited($_POST["article_attachment_submit"])
         );
-        return ["workshop.tpl.twig", [
-            "available_modes"                => $availableMainModes,
-            "available_adding_modes"         => $availableAddModes,
 
-            "adding_mode"                    => $addingMode,
-            "main_mode"                      => $mainMode,
+        $submitAvailability = $this->getSubmitAvailability(
+            $_POST["find_code"],
+            $_POST["attaching_article"],
+            $_POST["code_pattern"]
+        );
 
-            "was_code_created"               => $wasCodeCreated,
+        if ($this->wasActionSubmited($_POST["article_attachment_submit"])) {
+            $this->showUserSubmitWarnings($_POST["attaching_article"], $_POST["code_pattern"]);
+        }
 
-            "attaching_article"              => $currentArticle,
-            "was_article_attached"           => $wasArticleAttached,
-            "searching_code"                 => $currentSearchingCode,
-        ]];
+        if ($this->wasActionSubmited($_POST["find_code"])) {
+            $this->showUserSearchWarnings($_POST["code_pattern"]);
+        }
+
+        return [
+            "workshop.tpl.twig",
+            [
+                "available_modes"                => $availableMainModes,
+                "available_adding_modes"         => $availableAddModes,
+
+                "adding_mode"                    => $addingMode,
+                "main_mode"                      => $mainMode,
+
+                "was_code_created"               => $wasCodeCreated,
+
+                "attaching_article"              => $currentArticle,
+                "was_article_attached"           => $wasArticleAttached,
+                "searching_code"                 => $currentSearchingCode,
+                "send_able"                      => $submitAvailability,
+            ],
+        ];
     }
 
     public function getTemplateNameWithParameters(): array

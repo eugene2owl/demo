@@ -9,7 +9,6 @@
                 {{ (main_mode == loop.index) ? 'checked' : '' }}
         >
     {% endfor %}
-    <input type="submit" value="ok">
     <br>
     {% if main_mode == 1 %}
         {% include "admin_adding_panel.tpl.twig" %}
