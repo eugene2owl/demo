@@ -11,7 +11,7 @@ use Demo\Service\myPDO;
 class Contents
 {
     private const SCHEMA_NAME = "demo";
-    private const ENTITY_TABLE_POSTFIX = "s_";
+    private const ENTITY_TABLE_POSTFIX = "s";
     private const BRIDGE = "_";
     private const RELATION_TABLE_POSTFIX = "_relation";
     private $connection;

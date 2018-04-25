@@ -12,6 +12,8 @@ require_once "../service/LinkInserter.php";
 use Demo\Service\Contents as ContentsService;
 use Demo\Service\LinkInserter;
 
+$start =  microtime(true);
+
 $tunnelToDB = new ContentsService();
 
 $pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
@@ -48,3 +50,5 @@ echo $twig->render("index.tpl.twig", [
     "image_1_src"   => IMAGES_FOLDER_PATH . $pageContents["images"][0]["name"],
     "up_url"        => basename(__FILE__),
 ]);
+
+echo microtime(true) - $start;
