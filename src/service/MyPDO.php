@@ -10,6 +10,7 @@ class myPDO
     private static $dsn = null;
     private static $username = null;
     private static $password = null;
+    private static $dbname = null;
     private static $charset = null;
 
     private static $connection;
@@ -21,7 +22,9 @@ class myPDO
     {
         $parameters = parse_ini_file("/home/eugene/PhpstormProjects/demo/.env");
         self::$charset = $parameters["charset"];
+        self::$dbname = $parameters["dbname"];
         self::$dsn = $parameters["dsn"];
+        self::$dsn .= ";dbname=" . self::$dbname;
         self::$dsn .= ";charset=" . self::$charset;
         self::$username = $parameters["username"];
         self::$password = $parameters["password"];

@@ -14,7 +14,18 @@ use Demo\Service\LinkInserter;
 
 $tunnelToDB = new ContentsService();
 
-$pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
+$pageContents = $tunnelToDB->getContentsFromPage('baseTypes.php');
+//var_dump($pageContents);
+
+$pageTitleCouples = $tunnelToDB->getPageTitleCouples();
+//var_dump($pageTitleCouples);
+
+$listsFromPage = $pageContents["lists"];
+//var_dump($listsFromPage);
+
+$codesWithAttachments = $pageContents["codes"];
+var_dump($codesWithAttachments);
+/*$pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
 $elements = $tunnelToDB->getSpouse(
     $pageContents["lists"][0]["name"],
     "list",
@@ -47,4 +58,4 @@ echo $twig->render("index.tpl.twig", [
     "sources"       => $elements,
     "image_1_src"   => IMAGES_FOLDER_PATH . $pageContents["images"][0]["name"],
     "up_url"        => basename(__FILE__),
-]);
+]);*/

@@ -24,10 +24,39 @@ class Contents
             "articles"    => $this->repository->getSpouses($pageName, "page", "article"),
             "images"      => $this->repository->getSpouses($pageName, "page", "image"),
             "links"       => $this->repository->getSpouses($pageName, "page", "link"),
-            "codes"       => $this->repository->getSpouses($pageName, "page", "code"),
-            "lists"       => $this->repository->getSpouses($pageName, "page", "list"),
+            "codes"       => $this->formatCodesWithAttachmentsFromPage(
+                $this->repository->getCodesWithAttachmentsFromPage($pageName)
+            ),
+            "lists"       => $this->formatListsWithElementsFromPage(
+                $this->repository->getListsWithElementsFromPage($pageName)
+            ),
+            // list или на странице или у кода
+            // задача написать две штуки
         ];
         return $contents;
+    }
+
+    private function formatCodesWithAttachmentsFromPage(array $queryResult): array
+    {
+        $formattedArray = [];
+        foreach ($queryResult as $number => $attachments) {
+            if (!empty($attachments[1])) {
+                $formattedArray[$attachments[0]][] = $attachments[1];//абзац
+            }
+            if (!empty($attachments[3])) {
+                $formattedArray[$attachments[0]][$attachments[2]][] = $attachments[3]; //имя списка
+            }
+        }
+        return $formattedArray;
+    }
+
+    private function formatListsWithElementsFromPage(array $queryResult): array
+    {
+        $formattedArray = [];
+        foreach ($queryResult as $number => $list_element) {
+            $formattedArray[$list_element[0]][] = $list_element[1];
+        }
+        return $formattedArray;
     }
 
     public function getSpouse(string $knownEntityName, string $knownEntity, string $neededEntity): array
@@ -42,17 +71,7 @@ class Contents
 
     public function getPageTitleCouples(): array
     {
-        $pages = $this->repository->getEntity("page");
-        $titles = [];
-        foreach ($pages as $number => $page) {
-            $titles[] = $this->getSpouse($page["name"], "page", "title");
-        }
-        $pageTitleCouples = [];
-        foreach ($titles as $number => $title) {
-            $pageTitleCouples[$number]["page"] = $pages[$number]["name"];
-            $pageTitleCouples[$number]["title"] = $title[0]["name"];
-        }
-        return $pageTitleCouples;
+        return $this->repository->getPageTitleCouples();
     }
 
     public function getLinksAssociationsFromPage(string $pageName): array
@@ -63,30 +82,5 @@ class Contents
             $linkToSourceCouples[$link["text"]] = $link["name"];
         }
         return $linkToSourceCouples;
-    }
-
-    public function getCodesWithAttachmentsFromPage(string $pageName): array
-    {
-        $codes = $this->getCodesFromPage($pageName);
-        foreach ($codes as $number => $code) {
-            $codes[$number] = $this->getCodeWithAttachments($code);
-        }
-        return $codes;
-    }
-
-    private function getCodesFromPage(string $pageName): array
-    {
-        return $this->repository->getSpouses($pageName, "page", "code");
-    }
-
-    private function getCodeWithAttachments(array $code): array
-    {
-        $codeArticles = $this->repository->getSpouses($code["name"], "code", "article");
-        $codeLists = $this->repository->getSpouses($code["name"], "code", "list");
-        return [
-            "code"        => $code,
-            "articles"    => $codeArticles,
-            "lists"        => $codeLists,
-        ];
     }
 }
