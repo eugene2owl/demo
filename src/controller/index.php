@@ -28,7 +28,6 @@ $innerLinks = [
     "writing your own functions"                => array_keys($pageTitleCouples)[2],
     "issues of database design"                 => array_keys($pageTitleCouples)[7],
 ];
-var_dump($pageTitleCouples);
 $pageContents["lists"]["sources"] = $linkInserter->insertLinksIntoTexts($externalLinks, $pageContents["lists"]["sources"]);
 $pageContents["articles"] = $linkInserter->insertLinksIntoTexts($innerLinks, $pageContents["articles"]);
 
