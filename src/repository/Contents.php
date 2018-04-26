@@ -59,6 +59,7 @@ class Contents
                 ON (one.id = many_one.$knownEntity" . "_id AND one.name = :knownEntityName)
               JOIN $neededEntityTable many
                 ON (many.id = many_one.$neededEntity" . "_id)
+                ORDER BY many.id;
                 ";
         return $sql;
     }
@@ -99,7 +100,8 @@ FROM pages page
   JOIN title_page_relation title_page
     ON (page.id = title_page.page_id)
   JOIN titles title
-    ON (title.id = title_page.title_id);
+    ON (title.id = title_page.title_id)
+ORDER BY title.id;
 SQL;
     }
 
@@ -141,7 +143,7 @@ SQL;
     private function getCodesWithAttachmentsFromPageQuery(): string
     {
         return <<< SQL
-SELECT code.name, article.name, list.name, element.name
+SELECT code.name, article.name, list.name, element.name, code.output
 FROM codes code
 
   JOIN code_page_relation code_page

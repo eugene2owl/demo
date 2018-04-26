@@ -13,16 +13,16 @@
     <ol>
         {% for code in codes %}
             <li>
-                <p>{{ code.articles.0.name }}</p>
+                <p>{{ code[0] }}</p>
                 <pre>
                     <div class="code">
-{{ code.code.name|raw }}
+{{ code['coloredCode']|raw }}
                     </div>
                     <div class="code output">
-{{ code.code.output|raw }}
+{{ code['output']|raw }}
                     </div>
                 </pre>
-                <p>{{ code.articles.1.name }}</p>
+                <p>{{ code[1] }}</p>
             </li>
         {% endfor %}
     </ol>

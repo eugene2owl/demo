@@ -16,28 +16,27 @@
         <li>
             <pre>
                 <div class="code">
-{{ code.code.name|raw }}
+{{ code.coloredCode|raw }}
                 </div>
             </pre>
 
-            {% for article in code.articles %}
-                <p>
-                    {{ article.name }}
-                </p>
+            <p>
+                {{ code.0 }}
+            </p>
+            {% for key in code|keys %}
+                {% if key != 'output' and key != 'coloredCode' and key|number_format != key %}
+                    {% set listKey = key %}
+                        <div class="list-group">
+                            <ul>
+                                {% for element in code[listKey] %}
+                                    <li class="list-group-item flex-column align-items-start">
+                                        {{ element }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                {% endif %}
             {% endfor %}
-
-            <div class="list-group">
-                <ul>
-                    {% for list in code.lists %}
-                        {% for element in list.elements %}
-                            <li class="list-group-item flex-column align-items-start">
-                                {{ element.name }}
-                            </li>
-                        {% endfor %}
-                    {% endfor %}
-                </ul>
-            </div>
-
         </li>
     {% endfor %}
     </ol>

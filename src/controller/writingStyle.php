@@ -8,25 +8,19 @@ require_once "const.php";
 require_once "../../vendor/autoload.php";
 require_once "../service/Contents.php";
 require_once "../service/CodeProcessor.php";
-require_once "../service/ListProcessor.php";
 
 use Demo\Service\CodeProcessor;
 use Demo\Service\Contents as ContentsService;
-use Demo\Service\ListProcessor;
 
 $tunnelToDB = new ContentsService();
 $pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
 
-$codes = $tunnelToDB->getCodesWithAttachmentsFromPage(basename(__FILE__));
 $codeProcessor = new CodeProcessor();
-$codes = $codeProcessor->processCodes($codes);
-
-$listProcessor = new ListProcessor();
-$codes = $listProcessor->clarifyCodesLists($codes);
+$codes = $codeProcessor->processCodes($pageContents["codes"]);
 
 $loader = new \Twig_Loader_Filesystem(TEMPLATES_PATH_FOR_TWIG);
 $twig = new \Twig_Environment($loader);
-
+var_dump($pageContents["articles"]);
 echo $twig->render("writingStyle.tpl.twig", [
     "title"       => $pageContents["titles"][0]["name"],
     "header"      => $pageContents["titles"][0]["name"],

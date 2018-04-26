@@ -31,8 +31,11 @@ class CodeProcessor
         return $code;
     }
 
-    private function processOutput(string $output, RegExer $regularExpresser):string
+    private function processOutput(?string $output, RegExer $regularExpresser): string
     {
+        if (empty($output)) {
+            return "";
+        }
         $output = $regularExpresser->wrapUpInSpan(
             $output,
             self::STRING_REGEX,
@@ -44,9 +47,9 @@ class CodeProcessor
     public function processCodes(array $codes): array
     {
         $regExer = new RegExer();
-        foreach ($codes as $number => $code) {
-            $codes[$number]["code"]["name"] = $this->processCode($code["code"]["name"], $regExer);
-            $codes[$number]["code"]["output"] = $this->processOutput($code["code"]["output"], $regExer);
+        foreach ($codes as $code => $attachments) {
+            $codes[$code]["coloredCode"] = $this->processCode($code, $regExer);
+            $codes[$code]["output"] = $this->processOutput($attachments["output"], $regExer);
         }
         return $codes;
     }

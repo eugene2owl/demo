@@ -14,36 +14,21 @@ use Demo\Service\LinkInserter;
 
 $tunnelToDB = new ContentsService();
 
-$pageContents = $tunnelToDB->getContentsFromPage('baseTypes.php');
-//var_dump($pageContents);
+$pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
 
-$pageTitleCouples = $tunnelToDB->getPageTitleCouples();
-//var_dump($pageTitleCouples);
-
-$listsFromPage = $pageContents["lists"];
-//var_dump($listsFromPage);
-
-$codesWithAttachments = $pageContents["codes"];
-var_dump($codesWithAttachments);
-/*$pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
-$elements = $tunnelToDB->getSpouse(
-    $pageContents["lists"][0]["name"],
-    "list",
-    "element"
-    );
 $pageTitleCouples = $tunnelToDB->getPageTitleCouples();
 
 $linkInserter = new LinkInserter();
 $externalLinks = $tunnelToDB->getLinksAssociationsFromPage(basename(__FILE__));
 $innerLinks = [
-    "MVC conception"                            => $pageTitleCouples[5]["page"],
-    "interaction with a database"               => $pageTitleCouples[2]["page"],
-    "form processing"                           => $pageTitleCouples[3]["page"],
-    "high level solutions of trivial issues"    => $pageTitleCouples[0]["page"],
-    "writing your own functions"                => $pageTitleCouples[6]["page"],
-    "issues of database design"                 => $pageTitleCouples[1]["page"],
+    "MVC conception"                            => array_keys($pageTitleCouples)[5],
+    "interaction with a database"               => array_keys($pageTitleCouples)[4],
+    "form processing"                           => array_keys($pageTitleCouples)[3],
+    "high level solutions of trivial issues"    => array_keys($pageTitleCouples)[1],
+    "writing your own functions"                => array_keys($pageTitleCouples)[2],
+    "issues of database design"                 => array_keys($pageTitleCouples)[6],
 ];
-$elements = $linkInserter->insertLinksIntoTexts($externalLinks, $elements);
+$pageContents["lists"]["sources"] = $linkInserter->insertLinksIntoTexts($externalLinks, $pageContents["lists"]["sources"]);
 $pageContents["articles"] = $linkInserter->insertLinksIntoTexts($innerLinks, $pageContents["articles"]);
 
 $loader = new \Twig_Loader_Filesystem(TEMPLATES_PATH_FOR_TWIG);
@@ -55,7 +40,7 @@ echo $twig->render("index.tpl.twig", [
     "siteBar"       => $pageTitleCouples,
     "article_1"     => $pageContents["articles"][0]["name"],
     "article_2"     => $pageContents["articles"][1]["name"],
-    "sources"       => $elements,
+    "sources"       => $pageContents["lists"]["sources"],
     "image_1_src"   => IMAGES_FOLDER_PATH . $pageContents["images"][0]["name"],
     "up_url"        => basename(__FILE__),
-]);*/
+]);

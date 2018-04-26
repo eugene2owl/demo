@@ -9,28 +9,22 @@ require_once "../../vendor/autoload.php";
 require_once "../service/Contents.php";
 require_once "../service/CodeProcessor.php";
 require_once "../service/LinkInserter.php";
-require_once "../service/ListProcessor.php";
 
 use Demo\Service\Contents as ContentsService;
 use Demo\Service\CodeProcessor;
 use Demo\Service\LinkInserter;
-use Demo\Service\ListProcessor;
 
 $tunnelToDB = new ContentsService();
 $pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
 $pageTitleCouples = $tunnelToDB->getPageTitleCouples();
 
-$codes = $tunnelToDB->getCodesWithAttachmentsFromPage(basename(__FILE__));
 $codeProcessor = new CodeProcessor();
-$codes = $codeProcessor->processCodes($codes);
-
-$listProcessor = new ListProcessor();
-$lists = $listProcessor->clarifyLists($pageContents["lists"]);
+$codes = $codeProcessor->processCodes($pageContents["codes"]);
 
 $linkInserter = new LinkInserter();
 $externalLinks = $tunnelToDB->getLinksAssociationsFromPage(basename(__FILE__));
 $innerLinks = [
-    "long way"       => $pageTitleCouples[5]["page"],
+    "long way"       => array_keys($pageTitleCouples)[5],
 ];
 $links = array_merge($externalLinks, $innerLinks);
 $pageContents["articles"] = $linkInserter->insertLinksIntoTexts($links, $pageContents["articles"]);
@@ -44,5 +38,5 @@ echo $twig->render("DBInteraction.tpl.twig", [
     "articles"     => $pageContents["articles"],
     "header_1"     => $pageContents["titles"][1]["name"],
     "codes"        => $codes,
-    "lists"        => $lists,
+    "lists"        => $pageContents["lists"],
 ]);

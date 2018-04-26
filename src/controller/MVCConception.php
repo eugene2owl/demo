@@ -9,24 +9,17 @@ require_once "../../vendor/autoload.php";
 require_once "../service/Contents.php";
 require_once "../service/LinkInserter.php";
 require_once "../service/StyleChanger.php";
-require_once "../service/ListProcessor.php";
 
 use Demo\Service\Contents as ContentsService;
 use Demo\Service\LinkInserter;
 use Demo\Service\StyleChanger;
-use Demo\Service\ListProcessor;
 
 $tunnelToDB = new ContentsService();
 $pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
 
-$listProcessor = new ListProcessor();
-$lists = $listProcessor->clarifyLists($pageContents["lists"]);
-
 $linkInserter = new LinkInserter();
-$links = [
-
-];
-$pageContents["articles"] = $linkInserter->insertLinksIntoTexts($links, $pageContents["articles"]);
+$externalLinks = $tunnelToDB->getLinksAssociationsFromPage(basename(__FILE__));
+$pageContents["articles"] = $linkInserter->insertLinksIntoTexts($externalLinks, $pageContents["articles"]);
 
 $styleChanger = new StyleChanger();
 $radiobuttonValues = $styleChanger->getRadiobuttonValues();
@@ -41,7 +34,8 @@ echo $twig->render("MVCConception.tpl.twig", [
     "header"               => $pageContents["titles"][0]["name"],
     "articles"             => $pageContents["articles"],
     "title_1"              => $pageContents["titles"][1]["name"],
-    "lists"                => $lists,
+    "MVC_scenario_list"    => $pageContents["lists"]["MVC_scenario"],
+    "MVC_advantages_list"  => $pageContents["lists"]["MVC_advantages"],
     "radiobuttonValues"    => $radiobuttonValues,
     "image_1_src"          => IMAGES_FOLDER_PATH . $pageContents["images"][0]["name"],
     "image_2_src"          => IMAGES_FOLDER_PATH . $pageContents["images"][1]["name"],

@@ -9,24 +9,18 @@ require_once "../../vendor/autoload.php";
 require_once "../service/Contents.php";
 require_once "../service/CodeProcessor.php";
 require_once "../service/FormProcessorDemo.php";
-require_once "../service/ListProcessor.php";
 
 use Demo\Service\Contents as ContentsService;
 use Demo\Service\CodeProcessor;
 use Demo\Service\FormProcessorDemo;
-use Demo\Service\ListProcessor;
 
 $tunnelToDB = new ContentsService();
 $pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
 
-$codes = $tunnelToDB->getCodesWithAttachmentsFromPage(basename(__FILE__));
+var_dump($pageContents);
+
 $codeProcessor = new CodeProcessor();
-$codes = $codeProcessor->processCodes($codes);
-
-$listProcessor = new ListProcessor();
-$codes = $listProcessor->clarifyCodesLists($codes);
-
-$conclusionList = $listProcessor->clarifyList($pageContents["lists"][5]);
+$codes = $codeProcessor->processCodes($pageContents["codes"]);
 
 $formProcessor = new FormProcessorDemo();
 $formResults = $formProcessor->getFormResults();
@@ -41,5 +35,5 @@ echo $twig->render("formProcessing.tpl.twig", [
     "form_results"      => $formResults,
     "codes"             => $codes,
     "conclusion"        => $pageContents["titles"][1]["name"],
-    "conclusionList"    => $conclusionList,
+    "conclusionList"    => $pageContents["lists"]["form_processing_conclusion"],
 ]);
