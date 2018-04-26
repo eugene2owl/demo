@@ -177,4 +177,33 @@ SQL;
         ]);
         return $statement->fetchAll(\PDO::FETCH_NUM);
     }
+
+    private function getPagesTitleCouplesByPatternQuery(): string
+    {
+        return <<< SQL
+SELECT page.name, title.name FROM (pages page, titles title)
+                             JOIN articles article
+                               ON (article.name LIKE :pattern)
+                             JOIN article_page_relation article_page
+                               ON (article_page.article_id = article.id AND article_page.page_id = page.id)
+                             JOIN title_page_relation title_page
+                               ON title_page.title_id = title.id AND title_page.page_id = page.id;
+SQL;
+    }
+
+    public function getPagesTitleCouplesByPattern(?string $pattern): array
+    {
+        if (!is_string($pattern)) {
+            return [];
+        }
+        if (empty(trim($pattern))) {
+            return [];
+        }
+        $sql = $this->getPagesTitleCouplesByPatternQuery();
+        $statement = $this->connection->prepare($sql);
+        $statement->execute([
+            "pattern" => "%$pattern%"
+        ]);
+        return $statement->fetchAll(\PDO::FETCH_NUM);
+    }
 }

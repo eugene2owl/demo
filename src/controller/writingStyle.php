@@ -20,7 +20,7 @@ $codes = $codeProcessor->processCodes($pageContents["codes"]);
 
 $loader = new \Twig_Loader_Filesystem(TEMPLATES_PATH_FOR_TWIG);
 $twig = new \Twig_Environment($loader);
-var_dump($pageContents["articles"]);
+
 echo $twig->render("writingStyle.tpl.twig", [
     "title"       => $pageContents["titles"][0]["name"],
     "header"      => $pageContents["titles"][0]["name"],

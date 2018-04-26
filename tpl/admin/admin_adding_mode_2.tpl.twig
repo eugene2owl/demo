@@ -1,0 +1,16 @@
+<div>
+    <textarea name="attaching_article" id="articlearea" cols="30" rows="10" minlength="5" placeholder="article">{{ attaching_article }}</textarea>
+</div>
+
+<div>
+    <textarea name="code_pattern" id="codepatternarea" cols="30" rows="10" minlength="5" placeholder="code">{{ searching_code }}</textarea>
+</div>
+
+<div>
+    <input type="submit" value="find code" name="find_code">
+    <input type="submit" value="attach" name="article_attachment_submit"
+    {{ not send_able ? 'disabled' : '' }}
+    >
+</div>
+
+{{ (was_article_attached) ? 'Article was attached' : '' }}

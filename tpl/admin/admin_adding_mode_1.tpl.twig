@@ -1,0 +1,12 @@
+<div>
+    <textarea name="code" id="codearea" cols="30" rows="10" minlength="5" placeholder="code"></textarea>
+</div>
+<div>
+    <textarea name="output" id="outputarea" cols="30" rows="10" placeholder="output"></textarea>
+</div>
+<div>
+    <input type="submit" value="cancel" name="code_create_cancel">
+    <input type="submit" value="create" name="code_create_ok">
+</div>
+
+{{ (was_code_created) ? 'Code was created' : '' }}

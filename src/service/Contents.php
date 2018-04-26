@@ -99,6 +99,13 @@ class Contents
         );
     }
 
+    public function searchPagesByPattern(?string $pattern): array
+    {
+        return $this->formatPageTitleCouples(
+            $this->repository->getPagesTitleCouplesByPattern($pattern)
+        );
+    }
+
     private function formatPageTitleCouples(array $queryResult): array
     {
         $formattedArray = [];

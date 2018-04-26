@@ -1,0 +1,16 @@
+<form method="POST">
+    {% for available_mode in available_modes %}
+        <label for="{{ available_mode }}">{{ available_mode }}</label>
+        <input
+                type="radio"
+                value="{{ loop.index }}"
+                name="main_option"
+                id="{{ available_mode }}"
+                {{ (main_mode == loop.index) ? 'checked' : '' }}
+        >
+    {% endfor %}
+    <br>
+    {% if main_mode == 1 %}
+        {% include "admin_adding_panel.tpl.twig" %}
+    {% endif %}
+</form>

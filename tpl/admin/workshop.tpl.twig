@@ -1,0 +1,10 @@
+{% extends "baseAdmin.tpl.twig" %}
+
+{% block contents %}
+ {% include "admin_main_panel.tpl.twig" %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="design/js/radioSubmit.js"></script>
+{% endblock %}

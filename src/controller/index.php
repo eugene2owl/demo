@@ -11,7 +11,7 @@ require_once "../service/LinkInserter.php";
 
 use Demo\Service\Contents as ContentsService;
 use Demo\Service\LinkInserter;
-
+$start = microtime(true);
 $tunnelToDB = new ContentsService();
 
 $pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
@@ -37,6 +37,7 @@ $twig = new \Twig_Environment($loader);
 echo $twig->render("index.tpl.twig", [
     "title"         => $pageContents["titles"][0]["name"],
     "header"        => $pageContents["titles"][0]["name"],
+    "searchedList"  => $tunnelToDB->searchPagesByPattern($_POST["pattern"]),
     "siteBar"       => $pageTitleCouples,
     "article_1"     => $pageContents["articles"][0]["name"],
     "article_2"     => $pageContents["articles"][1]["name"],
@@ -44,3 +45,4 @@ echo $twig->render("index.tpl.twig", [
     "image_1_src"   => IMAGES_FOLDER_PATH . $pageContents["images"][0]["name"],
     "up_url"        => basename(__FILE__),
 ]);
+echo microtime(true) - $start;
