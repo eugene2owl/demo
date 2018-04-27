@@ -46,9 +46,9 @@ class Contents
 
     private function isCodePoor(array $attachments): bool
     {
-        $isPoor = false;
+        $isPoor = true;
         foreach ($attachments as $number => $attachment) {
-            $isPoor = ($number > 0 && empty($attachment)) ? true : $isPoor;
+            $isPoor = ($number > 0 && !empty($attachment)) ? false : $isPoor;
         }
         return $isPoor;
     }
@@ -69,6 +69,7 @@ class Contents
             if (!empty($attachments[3])) {
                 $formattedArray[$attachments[0]][$attachments[2]][] = $attachments[3];
             }
+            $formattedArray[$attachments[0]] = array_unique($formattedArray[$attachments[0]]);
         }
         return $formattedArray;
     }

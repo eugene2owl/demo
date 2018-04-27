@@ -86,3 +86,7 @@ pre {
 .list-group {
     margin: 30px 0;
 }
+
+.btn:hover {
+    cursor: pointer;
+}

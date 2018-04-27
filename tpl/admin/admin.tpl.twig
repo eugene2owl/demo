@@ -2,7 +2,7 @@
 
 {% block contents %}
     <form method="POST">
-        <input type="submit" value="Go to dev." name="switcher">
+        <input id="switcher" type="submit" value="Go to dev." name="switcher" class="btn btn-danger">
     </form>
 
     <ol>
@@ -14,21 +14,11 @@
                 </div>
             </pre>
 
-                <p>
-                    {{ code.0 }}
-                </p>
                 {% for key in code|keys %}
-                    {% if key != 'output' and key != 'coloredCode' and key|number_format != key %}
-                        {% set listKey = key %}
-                        <div class="list-group">
-                            <ul>
-                                {% for element in code[listKey] %}
-                                    <li class="list-group-item flex-column align-items-start">
-                                        {{ element }}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                    {% if key|number_format == key %}
+                        <p>
+                            {{ code[key] }}
+                        </p>
                     {% endif %}
                 {% endfor %}
             </li>
