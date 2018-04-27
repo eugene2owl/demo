@@ -59,29 +59,38 @@
     <ol>
         {% for code in codes %}
             <li>
-                <pre>
-                    <div class="code">
-{{ code.code.name|raw }}
-                    </div>
-                </pre>
-                <ol>
-                    {% for list in code.lists %}
-                        {% for element in list.elements %}
-                            <li>
-                                {{ element.name }}
-                            </li>
-                        {% endfor %}
-                    {% endfor %}
-                </ol>
+            <pre>
+                <div class="code">
+{{ code.coloredCode|raw }}
+                </div>
+            </pre>
+
+                <p>
+                    {{ code.0 }}
+                </p>
+                {% for key in code|keys %}
+                    {% if key != 'output' and key != 'coloredCode' and key|number_format != key %}
+                        {% set listKey = key %}
+                        <div class="list-group">
+                            <ul>
+                                {% for element in code[listKey] %}
+                                    <li class="list-group-item flex-column align-items-start">
+                                        {{ element }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </li>
         {% endfor %}
     </ol>
 
     <h3 id="conclusion">{{ conclusion }}</h3>
     <ol class="list-group">
-        {% for element in conclusionList.elements %}
+        {% for element in conclusionList %}
             <li class="list-group-item list-group-item-action list-group-item">
-                {{ element.name }}
+                {{ element }}
             </li>
         {% endfor %}
     </ol>

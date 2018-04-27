@@ -20,17 +20,70 @@ class Contents
     public function getContentsFromPage(string $pageName): array
     {
         $contents = [
-            "titles"      => $this->repository->getSpouses($pageName, "page", "title"),
-            "articles"    => $this->repository->getSpouses($pageName, "page", "article"),
-            "images"      => $this->repository->getSpouses($pageName, "page", "image"),
-            "links"       => $this->repository->getSpouses($pageName, "page", "link"),
-            "codes"       => $this->repository->getSpouses($pageName, "page", "code"),
-            "lists"       => $this->repository->getSpouses($pageName, "page", "list"),
+            "titles"      => $this->getSpouses($pageName, "page", "title"),
+            "articles"    => $this->getSpouses($pageName, "page", "article"),
+            "images"      => $this->getSpouses($pageName, "page", "image"),
+            "links"       => $this->getSpouses($pageName, "page", "link"),
+            "codes"       => $this->getCodesWithAttachmentsFromPage($pageName),
+            "lists"       => $this->getListsWithElementsFromPage($pageName),
         ];
         return $contents;
     }
 
-    public function getSpouse(string $knownEntityName, string $knownEntity, string $neededEntity): array
+    private function getCodesWithAttachmentsFromPage(string $pageName): array
+    {
+        return $this->formatCodesWithAttachmentsFromPage(
+            $this->repository->getCodesWithAttachmentsFromPage($pageName)
+        );
+    }
+
+    private function getListsWithElementsFromPage(string $pageName): array
+    {
+        return $this->formatListsWithElementsFromPage(
+            $this->repository->getListsWithElementsFromPage($pageName)
+        );
+    }
+
+    private function isCodePoor(array $attachments): bool
+    {
+        $isPoor = true;
+        foreach ($attachments as $number => $attachment) {
+            $isPoor = ($number > 0 && !empty($attachment)) ? false : $isPoor;
+        }
+        return $isPoor;
+    }
+
+    private function formatCodesWithAttachmentsFromPage(array $queryResult): array
+    {
+        $formattedArray = [];
+        foreach ($queryResult as $number => $attachments) {
+            if ($this->isCodePoor($attachments)) {
+                $formattedArray[$attachments[0]] = null;
+            }
+            if (!empty($attachments[4])) {
+                $formattedArray[$attachments[0]]["output"] = $attachments[4];
+            }
+            if (!empty($attachments[1])) {
+                $formattedArray[$attachments[0]][] = $attachments[1];
+            }
+            if (!empty($attachments[3])) {
+                $formattedArray[$attachments[0]][$attachments[2]][] = $attachments[3];
+            }
+            $formattedArray[$attachments[0]] = array_unique($formattedArray[$attachments[0]]);
+        }
+        return $formattedArray;
+    }
+
+    private function formatListsWithElementsFromPage(array $queryResult): array
+    {
+        $formattedArray = [];
+        foreach ($queryResult as $number => $list_element) {
+            $formattedArray[$list_element[0]][] = $list_element[1];
+        }
+        return $formattedArray;
+    }
+
+    public function getSpouses(string $knownEntityName, string $knownEntity, string $neededEntity): array
     {
         return $this->repository->getSpouses($knownEntityName, $knownEntity, $neededEntity);
     }
@@ -42,51 +95,36 @@ class Contents
 
     public function getPageTitleCouples(): array
     {
-        $pages = $this->repository->getEntity("page");
-        $titles = [];
-        foreach ($pages as $number => $page) {
-            $titles[] = $this->getSpouse($page["name"], "page", "title");
+        return $this->formatPageTitleCouples(
+            $this->repository->getPageTitleCouples()
+        );
+    }
+
+    public function searchPagesByPattern(?string $pattern): array
+    {
+        return $this->formatPageTitleCouples(
+            $this->repository->getPagesTitleCouplesByPattern($pattern)
+        );
+    }
+
+    private function formatPageTitleCouples(array $queryResult): array
+    {
+        $formattedArray = [];
+        foreach ($queryResult as $number => $couple) {
+            if (!isset($formattedArray[$couple[0]])) {
+                $formattedArray[$couple[0]] = $couple[1];
+            }
         }
-        $pageTitleCouples = [];
-        foreach ($titles as $number => $title) {
-            $pageTitleCouples[$number]["page"] = $pages[$number]["name"];
-            $pageTitleCouples[$number]["title"] = $title[0]["name"];
-        }
-        return $pageTitleCouples;
+        return $formattedArray;
     }
 
     public function getLinksAssociationsFromPage(string $pageName): array
     {
-        $links = $this->getSpouse($pageName, "page", "link");
+        $links = $this->getSpouses($pageName, "page", "link");
         $linkToSourceCouples = [];
         foreach ($links as $number => $link) {
             $linkToSourceCouples[$link["text"]] = $link["name"];
         }
         return $linkToSourceCouples;
-    }
-
-    public function getCodesWithAttachmentsFromPage(string $pageName): array
-    {
-        $codes = $this->getCodesFromPage($pageName);
-        foreach ($codes as $number => $code) {
-            $codes[$number] = $this->getCodeWithAttachments($code);
-        }
-        return $codes;
-    }
-
-    private function getCodesFromPage(string $pageName): array
-    {
-        return $this->repository->getSpouses($pageName, "page", "code");
-    }
-
-    private function getCodeWithAttachments(array $code): array
-    {
-        $codeArticles = $this->repository->getSpouses($code["name"], "code", "article");
-        $codeLists = $this->repository->getSpouses($code["name"], "code", "list");
-        return [
-            "code"        => $code,
-            "articles"    => $codeArticles,
-            "lists"        => $codeLists,
-        ];
     }
 }

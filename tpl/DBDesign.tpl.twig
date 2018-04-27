@@ -14,9 +14,9 @@
 
         {% if loop.index == 2 %}
             <ol class="list-group">
-                {% for element in DBPrinciples %}
+                {% for element in DBDesignAdvices %}
                     <li class="list-group-item list-group-item-action">
-                        {{ element.name }}
+                        {{ element }}
                     </li>
                 {% endfor %}
             </ol>
@@ -24,14 +24,26 @@
 
         {% if loop.index == 4 %}
             <ol class="list-group">
-                {% for element in DBDesignAdvices %}
+                {% for element in DBPrinciples %}
                     <li class="list-group-item list-group-item-action">
-                        {{ element.name }}
+                        {{ element }}
                     </li>
                 {% endfor %}
             </ol>
         {% endif %}
 
     {% endfor %}
+
+    {% for code in codes %}
+            <pre>
+                <div class="code">
+{{ code['coloredCode']|raw }}
+                </div>
+                <div class="code output">
+{{ code['output']|raw }}
+                </div>
+            </pre>
+    {% endfor %}
+
     <img id="image_schema" src="{{ image_schema }}" alt="schema">
 {% endblock %}

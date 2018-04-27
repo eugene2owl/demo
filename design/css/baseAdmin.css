@@ -3,7 +3,11 @@ html, body {
     padding: 0;
     font-size: 23px;
     color: black;
+<<<<<<< HEAD
     background-color: #883DAB;
+=======
+    background-color: #A3C6DE;
+>>>>>>> master
 }
 
 p {
@@ -19,7 +23,11 @@ h3 {
     padding: 50px;
     width: 1100px;
     min-height: 885px;
+<<<<<<< HEAD
     background-color: #EAE3D6;
+=======
+    background-color: #EADBF0;
+>>>>>>> master
 }
 
 #contents {
@@ -85,4 +93,36 @@ pre {
 
 .list-group {
     margin: 30px 0;
+<<<<<<< HEAD
+=======
+}
+
+#switcher {
+    margin-left: 800px;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
+
+
+input[type="radio"] {
+    transform: scale(3);
+    margin-left: 20px;
+    margin-bottom: 30px;
+}
+
+label {
+    margin-left: 60px;
+}
+
+label:hover {
+    cursor: pointer;
+}
+
+.btn:hover {
+    cursor: pointer;
+}
+
+.btn {
+    margin-top: 10px;
+>>>>>>> master
 }

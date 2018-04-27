@@ -1,6 +1,7 @@
 {% extends "baseAdmin.tpl.twig" %}
 
 {% block contents %}
+<<<<<<< HEAD
 
 <ol>
     <form method="POST">
@@ -46,5 +47,30 @@
         </li>
     {% endfor %}
 </ol>
+=======
+    <form method="POST">
+        <input id="switcher" type="submit" value="Go to dev." name="switcher" class="btn btn-danger">
+    </form>
+
+    <ol>
+        {% for code in codes %}
+            <li>
+            <pre>
+                <div class="code">
+{{ code.coloredCode|raw }}
+                </div>
+            </pre>
+
+                {% for key in code|keys %}
+                    {% if key|number_format == key %}
+                        <p>
+                            {{ code[key] }}
+                        </p>
+                    {% endif %}
+                {% endfor %}
+            </li>
+        {% endfor %}
+    </ol>
+>>>>>>> master
 
 {% endblock %}

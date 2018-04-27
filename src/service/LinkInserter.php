@@ -21,11 +21,20 @@ class LinkInserter
     {
         foreach ($links as $pattern => $href) {
             foreach ($texts as $number => $text) {
-                $texts[$number]["name"] = $this->insertLink(
-                    $text["name"],
-                    $pattern,
-                    $href
-                );
+                if (isset($texts[$number]["name"])) {
+                    $texts[$number]["name"] = $this->insertLink(
+                        $text["name"],
+                        $pattern,
+                        $href
+                    );
+                }
+                if (is_string($texts[$number])) {
+                    $texts[$number] = $this->insertLink(
+                        $text,
+                        $pattern,
+                        $href
+                    );
+                }
             }
         }
         return $texts;

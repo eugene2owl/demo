@@ -28,33 +28,49 @@
         {% endif %}
 
         {% if loop.index == 5 %}
-            <pre>
-                <div class="code">
-{{ codes[0].code.name|raw }}
-                </div>
-                <div class="output">
-{{ codes[0].code.output|raw }}
-                </div>
-            </pre>
+            {% for code in codes %}
+                {% if loop.index == 1 %}
+                    <pre>
+                        <div class="code">
+{{ code['coloredCode']|raw }}
+                        </div>
+                    </pre>
+                    <pre>
+                        <div class="output">
+{{ code['output']|raw }}
+                        </div>
+                    </pre>
+                {% endif %}
+            {% endfor %}
         {% endif %}
 
         {% if loop.index == 8 %}
-            <pre>
-                <div class="code">
-{{ codes[1].code.name|raw }}
-                </div>
-                <div class="output">
-{{ codes[1].code.output|raw }}
-                </div>
-            </pre>
+            {% for code in codes %}
+                {% if loop.index == 2 %}
+                    <pre>
+                        <div class="code">
+{{ code['coloredCode']|raw }}
+                        </div>
+                    </pre>
+                    <pre>
+                        <div class="output">
+{{ code['output']|raw }}
+                        </div>
+                    </pre>
+                {% endif %}
+            {% endfor %}
         {% endif %}
 
         {% if loop.index == 9 %}
-            <pre>
-                <div class="code">
-{{ codes[2].code.name|raw }}
-                </div>
-            </pre>
+            {% for code in codes %}
+                {% if loop.index == 3 %}
+                    <pre>
+                        <div class="code">
+{{ code['coloredCode']|raw }}
+                        </div>
+                    </pre>
+                {% endif %}
+            {% endfor %}
         {% endif %}
 
     {% endfor %}

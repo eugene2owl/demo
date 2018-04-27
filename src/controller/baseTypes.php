@@ -15,9 +15,8 @@ use Demo\Service\CodeProcessor;
 $tunnelToDB = new ContentsService();
 $pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
 
-$codes = $tunnelToDB->getCodesWithAttachmentsFromPage(basename(__FILE__));
 $codeProcessor = new CodeProcessor();
-$codes = $codeProcessor->processCodes($codes);
+$codes = $codeProcessor->processCodes($pageContents["codes"]);
 
 $loader = new \Twig_Loader_Filesystem(TEMPLATES_PATH_FOR_TWIG);
 $twig = new \Twig_Environment($loader);

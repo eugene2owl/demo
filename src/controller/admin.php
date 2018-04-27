@@ -8,12 +8,18 @@ require_once "const.php";
 require_once "../../vendor/autoload.php";
 require_once "../service/Contents.php";
 require_once "../service/CodeProcessor.php";
+<<<<<<< HEAD
 require_once "../service/ListProcessor.php";
+=======
+>>>>>>> master
 require_once "../service/AdminProcessor.php";
 
 use Demo\Service\Contents as ContentsService;
 use Demo\Service\CodeProcessor;
+<<<<<<< HEAD
 use Demo\Service\ListProcessor;
+=======
+>>>>>>> master
 use Demo\Service\AdminProcessor;
 
 $adminProcessor = new AdminProcessor();

@@ -2,12 +2,17 @@
     max-width: max-content;
     margin-left: auto;
     margin-right: 0;
-    padding-bottom: 50px;
+    padding-bottom: 15px;
 }
 
 #search input {
     font-size: 20px;
     margin: 10px;
+}
+
+.searchResults {
+    background-color: #EADBF0;
+    text-align: right;
 }
 
 #menu {

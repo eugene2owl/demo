@@ -1,8 +1,17 @@
 {% block search %}
     <div id="search">
         <form method="POST" class="form-inline">
-            <input type="text" class="form-control" placeholder="Pattern">
+            <input type="text" class="form-control" placeholder="Pattern" name="pattern">
             <button type="submit" class="btn btn-sm btn-primary">Search</button>
         </form>
+    </div>
+    <div class="searchResults">
+        <ul>
+        {% for href in searchedList|keys %}
+            <li>
+                <a href="{{ href }}">{{ searchedList[href] }}</a>
+            </li>
+        {% endfor %}
+        </ul>
     </div>
 {% endblock %}

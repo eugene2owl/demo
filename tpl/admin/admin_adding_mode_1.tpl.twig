@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div>
     <textarea name="code" id="codearea" cols="30" rows="10" minlength="5" placeholder="code"></textarea>
 </div>
@@ -7,6 +8,19 @@
 <div>
     <input type="submit" value="cancel" name="code_create_cancel">
     <input type="submit" value="create" name="code_create_ok">
+=======
+<div class="form-group">
+    <div>
+        <textarea class="form-control" name="code" id="codearea" cols="30" rows="10" minlength="5" placeholder="code"></textarea>
+    </div>
+    <div>
+        <textarea class="form-control" name="output" id="outputarea" cols="30" rows="10" placeholder="output"></textarea>
+    </div>
+    <div>
+        <input class="btn btn-secondary" type="submit" value="clear" name="code_create_cancel">
+        <input class="btn btn-success" type="submit" value="create" name="code_create_ok">
+    </div>
+>>>>>>> master
 </div>
 
 {{ (was_code_created) ? 'Code was created' : '' }}

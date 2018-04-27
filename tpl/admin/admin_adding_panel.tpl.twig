@@ -1,4 +1,5 @@
 {% for available_adding_mode in available_adding_modes %}
+<<<<<<< HEAD
     <label for="add{{ available_adding_mode }}">{{ available_adding_mode }}</label>
     <input
             type="radio"
@@ -7,6 +8,16 @@
             id="add{{ available_adding_mode }}"
             {{ (adding_mode == loop.index) ? 'checked' : '' }}
     >
+=======
+        <label for="add{{ available_adding_mode }}">{{ available_adding_mode }}
+        <input
+                type="radio"
+                value="{{ loop.index }}"
+                name="add_option"
+                id="add{{ available_adding_mode }}"
+                {{ (adding_mode == loop.index) ? 'checked' : '' }}
+        ></label>
+>>>>>>> master
 {% endfor %}
 
 {% if adding_mode == 1 %}

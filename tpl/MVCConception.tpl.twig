@@ -14,9 +14,9 @@
         </p>
         {% if loop.index == 2 %}
             <ol>
-                {% for element in lists.0.elements %}
+                {% for element in MVC_scenario_list %}
                     <li>
-                        {{ element.name }}
+                        {{ element }}
                     </li>
                 {% endfor %}
             </ol>
@@ -24,9 +24,9 @@
             <h3>{{ title_1 }}</h3>
 
             <ol class="list-group">
-                {% for element in lists.1.elements %}
+                {% for element in MVC_advantages_list %}
                     <li class="list-group-item list-group-item-action">
-                        {{ element.name }}
+                        {{ element }}
                     </li>
                 {% endfor %}
             </ol>
