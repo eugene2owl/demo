@@ -13,6 +13,13 @@
 {{ code.coloredCode|raw }}
                 </div>
             </pre>
+        {% if code.output != '' %}
+            <pre>
+                <div class="code">
+{{ code.output|raw }}
+                </div>
+            </pre>
+        {% endif %}
 
                 {% for key in code|keys %}
                     {% if key|number_format == key %}

@@ -69,7 +69,7 @@ class Contents
             if (!empty($attachments[3])) {
                 $formattedArray[$attachments[0]][$attachments[2]][] = $attachments[3];
             }
-            $formattedArray[$attachments[0]] = array_unique($formattedArray[$attachments[0]]);
+            $formattedArray[$attachments[0]] = array_unique((array)$formattedArray[$attachments[0]]);
         }
         return $formattedArray;
     }

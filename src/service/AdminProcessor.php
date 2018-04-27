@@ -8,20 +8,33 @@ require_once "../controller/const.php";
 require_once "../../vendor/autoload.php";
 require_once "Contents.php";
 require_once "CodeProcessor.php";
+require_once "../service/AdminAction.php";
 
 use Demo\Service\Contents as ContentsService;
-use Demo\Service\CodeProcessor;
+use Demo\Service\AdminAction as tunnelToRepository;
 
 class AdminProcessor
 {
     private $pageName;
+    private $tunnelToRepository;
 
-    private const CODE_MIN_LENGHT = 5;
-    private const ARTICLE_MIN_LENGHT = 5;
-    private const PATTERN_MIN_LENGHT = 1;
+    private const CODE_MIN_LENGTH = 5;
+    private const ARTICLE_MIN_LENGTH = 5;
+    private const PATTERN_MIN_LENGTH = 1;
+
+    private const INVALID_ARTICLE = "Article is not valid.";
+    private const INVALID_CODE = "Code is not valid.";
+    private const CODE_NOT_FOUND = "No code found.";
+    private const CODE_ADDED = "Code successfully added to page.";
+    private const CODE_NOT_ADDED_DB = "Code was not added because of inner database occasion.";
+    private const CODE_NOT_ADDED_INPUT = "Code was not added because of not valid input.";
+    private const ATTACHED = "Successfully attached to code.";
+    private const NOT_ATTACHED_DB = "Not attached because of inner database occasion.";
+    private const NOT_ATTACHED_INPUT = "Not attached because of not valid input.";
 
     public function __construct(string $pageName = "admin.php")
     {
+        $this->tunnelToRepository = new tunnelToRepository();
         $this->pageName = $pageName;
     }
 
@@ -85,9 +98,9 @@ class AdminProcessor
     {
         if (
             is_string($inputedcode) &&
-            strlen(trim($inputedcode)) > self::CODE_MIN_LENGHT - 1
+            strlen(trim($inputedcode)) > self::CODE_MIN_LENGTH - 1
         ) {
-            return filter_var($inputedcode, FILTER_SANITIZE_STRING);
+            return trim($inputedcode);
         }
         return "";
     }
@@ -95,7 +108,7 @@ class AdminProcessor
     private function getCurrentAddingOutput(?string $inputedOutput): string
     {
         if (is_string($inputedOutput)) {
-            return filter_var($inputedOutput, FILTER_SANITIZE_STRING);
+            return trim($inputedOutput);
         }
         return "";
     }
@@ -109,7 +122,7 @@ class AdminProcessor
     {
         if (
             is_string($inputedArticle) &&
-            strlen(trim($inputedArticle)) > self::ARTICLE_MIN_LENGHT - 1
+            strlen(trim($inputedArticle)) > self::ARTICLE_MIN_LENGTH - 1
         ) {
             return filter_var($inputedArticle, FILTER_SANITIZE_STRING);
         }
@@ -120,9 +133,9 @@ class AdminProcessor
     {
         if (
             is_string($inputedPattern) &&
-            strlen(trim($inputedPattern)) > self::PATTERN_MIN_LENGHT - 1
+            strlen(trim($inputedPattern)) > self::PATTERN_MIN_LENGTH - 1
         ) {
-            return filter_var($inputedPattern, FILTER_SANITIZE_STRING);   // query to DB
+            return $this->tunnelToRepository->getCodeByPattern($inputedPattern, $this->pageName);
         }
         return "";
     }
@@ -132,13 +145,13 @@ class AdminProcessor
         echo "<script> alert('$message') </script>";
     }
 
-    private function showUserSubmitWarnings(?string $inputedArticle, ?string $inputedCodePattern): bool ///// the same for crating TO DO
+    private function showUserSubmitWarnings(?string $inputedArticle, ?string $inputedCodePattern): bool
     {
         if (empty($this->getCurrentAttachedArticle($inputedArticle))) {
-            $messageList[] = "Article is not valid.";
+            $messageList[] = self::INVALID_ARTICLE;
         }
         if (empty($this->getCurrentSearchingCode($inputedCodePattern))) {
-            $messageList[] = "Code is not valid.";
+            $messageList[] = self::INVALID_CODE;
         }
         if (!empty($messageList)) {
             $this->showJSMessage(implode("\\n", $messageList));
@@ -150,7 +163,7 @@ class AdminProcessor
     private function showUserSearchWarnings(?string $inputedCodePattern): bool
     {
         if (empty($this->getCurrentSearchingCode($inputedCodePattern))) {
-            $this->showJSMessage("No code found.");
+            $this->showJSMessage(self::CODE_NOT_FOUND);
             return false;
         }
         return true;
@@ -172,14 +185,12 @@ class AdminProcessor
 
     private function addCodeToDataBase(string $code, string $output): bool
     {
-        $this->showJSMessage("$code ; $output");
-        return true;
+        return $this->tunnelToRepository->addCodeToAdminPage($code, $output, $this->pageName);
     }
 
     private function addAttachmentToDataBase(string $code, string $article): bool
     {
-        $this->showJSMessage("$code ; $article");
-        return true;
+        return $this->tunnelToRepository->attachArticleToCode($code, $article);
     }
 
     private function wasCodeCreated(?string $currentAddingCode, ?string $cancelButtonName): bool
@@ -199,13 +210,13 @@ class AdminProcessor
     {
         if ($wasCodeCreated) {
             if ($this->addCodeToDataBase($currentAddingCode, $currentAddingOutput)) {
-                $this->showJSMessage("Code was added.");
+                $this->showJSMessage(self::CODE_ADDED);
             } else {
-                $this->showJSMessage("Code WAS NOT added because of DB inner problems.");
+                $this->showJSMessage(self::CODE_NOT_ADDED_DB);
             }
         }
         if (!$wasCodeCreated && !$this->wasActionSubmited($cancelButtonName) && $this->isAdminDevState()) {
-            $this->showJSMessage("Code was not created because of invalid output.");
+            $this->showJSMessage(self::CODE_NOT_ADDED_INPUT);
         }
     }
 
@@ -230,13 +241,13 @@ class AdminProcessor
     {
         if ($wasArticleAttached) {
             if ($this->addAttachmentToDataBase($currentSearchingCode, $currentArticle)) {
-                $this->showJSMessage("Attached to DB!");
+                $this->showJSMessage(self::ATTACHED);
             } else {
-                $this->showJSMessage("NOT attached to DB");
+                $this->showJSMessage(self::NOT_ATTACHED_DB);
             }
         }
         if (!$wasArticleAttached && $this->isAdminDevState()) {
-            $this->showJSMessage("NOT attached because of invalid input.");
+            $this->showJSMessage(self::NOT_ATTACHED_INPUT);
         }
     }
 
@@ -255,6 +266,67 @@ class AdminProcessor
         }
     }
 
+    private function processCodeAdding(
+        ?string $codePost,
+        ?string $outputPost,
+        ?string $codeCreateCancelPost
+    ): array
+    {
+        $currentAddingCode = $this->getCurrentAddingCode($codePost);
+        $currentAddingOutput = $this->getCurrentAddingOutput($outputPost);
+        $wasCodeCreated = $this->wasCodeCreated($currentAddingCode, $codeCreateCancelPost);
+
+        $this->tryAddCodeToDataBase(
+            $wasCodeCreated,
+            $currentAddingCode,
+            $currentAddingOutput,
+            $codeCreateCancelPost
+        );
+        return [];
+    }
+
+    private function processAttachmentAdding(
+        ?string $findCodeSubmit,
+        ?string $attachingArticle,
+        ?string $codePattern,
+        ?string $articleAttachmentSubmit
+    ): array
+    {
+        $currentArticle = $this->getCurrentAttachedArticle($attachingArticle);
+
+        $currentSearchingCode = $this->getCurrentSearchingCode($codePattern);
+
+        $submitAvailability = $this->getSubmitAvailabilityToAttach(
+            $findCodeSubmit,
+            $attachingArticle,
+            $codePattern
+        );
+
+        $this->showPossibleWarnings(
+            $articleAttachmentSubmit,
+            $attachingArticle,
+            $codePattern,
+            $findCodeSubmit
+        );
+
+        $wasArticleAttached = $this->wasArticleAttached(
+            $currentArticle,
+            $currentSearchingCode,
+            $articleAttachmentSubmit
+        );
+
+        $this->tryAddAttachmentToDataBase(
+            $wasArticleAttached,
+            $currentSearchingCode,
+            $currentArticle
+        );
+        return [
+            "attaching_article"              => $currentArticle,
+            "searching_code"                 => $currentSearchingCode,
+            "send_able"                      => $submitAvailability,
+        ];
+    }
+
     private function getAdminPage(): array
     {
         $availableMainModes = $this->getAvailableMainModes();
@@ -263,63 +335,33 @@ class AdminProcessor
         $mainMode = $this->getCurrentMainMode($_POST["main_option"]);
         $addingMode = $this->getCurrentAddingMode($_POST["add_option"]);
 
-        $currentAddingCode = $this->getCurrentAddingCode($_POST["code"]);
-        $currentAddingOutput = $this->getCurrentAddingOutput($_POST["output"]);
-        $wasCodeCreated = $this->wasCodeCreated($currentAddingCode, $_POST["code_create_cancel"]);
-
-        $this->tryAddCodeToDataBase(
-            $wasCodeCreated,
-            $currentAddingCode,
-            $currentAddingOutput,
-            $_POST["code_create_cancel"]
-        );
-
-
-        $currentArticle = $this->getCurrentAttachedArticle($_POST["attaching_article"]);
-        $currentSearchingCode = $this->getCurrentSearchingCode($_POST["code_pattern"]);
-
-        $submitAvailability = $this->getSubmitAvailabilityToAttach(
-            $_POST["find_code_submit"],
-            $_POST["attaching_article"],
-            $_POST["code_pattern"]
-        );
-
-        $this->showPossibleWarnings(
-            $_POST["article_attachment_submit"],
-            $_POST["attaching_article"],
-            $_POST["code_pattern"],
-            $_POST["find_code_submit"]
-        );
-
-        $wasArticleAttached = $this->wasArticleAttached(
-            $currentArticle,
-            $currentSearchingCode,
-            $_POST["article_attachment_submit"]
-        );
-
-        $this->tryAddAttachmentToDataBase(
-            $wasArticleAttached,
-            $currentSearchingCode,
-            $currentArticle
-        );
-
-        return [
-            "workshop.tpl.twig",
-            [
-                "available_modes"                => $availableMainModes,
-                "available_adding_modes"         => $availableAddModes,
-
-                "adding_mode"                    => $addingMode,
-                "main_mode"                      => $mainMode,
-
-                "was_code_created"               => $wasCodeCreated,
-
-                "attaching_article"              => $currentArticle,
-                "was_article_attached"           => $wasArticleAttached,
-                "searching_code"                 => $currentSearchingCode,
-                "send_able"                      => $submitAvailability,
-            ],
+        $renderableValues = [
+            "available_modes"                => $availableMainModes,
+            "available_adding_modes"         => $availableAddModes,
+            "adding_mode"                    => $addingMode,
+            "main_mode"                      => $mainMode,
         ];
+
+        if ($mainMode == 1) {
+            if ($addingMode == 1) {
+                $this->processCodeAdding(
+                    $_POST["code"],
+                    $_POST["output"],
+                    $_POST["code_create_cancel"]
+                );
+            } elseif ($addingMode == 2) {
+                $additionalParameters = $this->processAttachmentAdding(
+                    $_POST["find_code_submit"],
+                    $_POST["attaching_article"],
+                    $_POST["code_pattern"],
+                    $_POST["article_attachment_submit"]
+                );
+                $renderableValues = array_merge($renderableValues, $additionalParameters);
+            }
+        } elseif ($mainMode == 2) {
+
+        }
+        return ["workshop.tpl.twig", $renderableValues];
     }
 
     private function isAdminDevState(): bool
