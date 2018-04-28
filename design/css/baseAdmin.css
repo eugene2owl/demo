@@ -100,6 +100,12 @@ input[type="radio"] {
     margin-bottom: 30px;
 }
 
+input[type="checkbox"] {
+    transform: scale(3);
+    margin-left: 20px;
+    margin-bottom: 30px;
+}
+
 label {
     margin-left: 60px;
 }
@@ -113,5 +119,5 @@ label:hover {
 }
 
 .btn {
-    margin-top: 10px;
+    margin: 10px 5px;
 }

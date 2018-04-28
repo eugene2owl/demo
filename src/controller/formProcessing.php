@@ -17,8 +17,6 @@ use Demo\Service\FormProcessorDemo;
 $tunnelToDB = new ContentsService();
 $pageContents = $tunnelToDB->getContentsFromPage(basename(__FILE__));
 
-var_dump($pageContents);
-
 $codeProcessor = new CodeProcessor();
 $codes = $codeProcessor->processCodes($pageContents["codes"]);
 

@@ -1,0 +1,20 @@
+<div class="form-group">
+    <div>
+        <textarea class="form-control" name="code_pattern" cols="30" rows="10" minlength="1" placeholder="code">{{ searching_code }}</textarea>
+    </div>
+
+    <div>
+        <input class="btn btn-secondary" type="submit" value="find code/articles" name="find_code_submit">
+        <input class="btn btn-success" type="submit" value="submit editing" name="article_editing_submit"
+                {{ not send_able ? 'disabled' : '' }}
+        >
+        <label>Delete code
+            <input type="checkbox" value="delete code" name="delete_code">
+        </label>
+    </div>
+    {% for article in attaching_articles %}
+        <div>
+            <textarea class="form-control" name="attaching_articles[]" cols="30" rows="5" minlength="1" placeholder="article">{{ article }}</textarea>
+        </div>
+    {% endfor %}
+</div>

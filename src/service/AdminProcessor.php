@@ -31,6 +31,9 @@ class AdminProcessor
     private const ATTACHED = "Successfully attached to code.";
     private const NOT_ATTACHED_DB = "Not attached because of inner database occasion.";
     private const NOT_ATTACHED_INPUT = "Not attached because of not valid input.";
+    private const EDITED = "Successfully edited.";
+    private const NOT_EDITED_DB = "Not edited because of inner database occasion.";
+    private const NOT_EDITED_INPUT = "Not edited because of not valid input.";
 
     public function __construct(string $pageName = "admin.php")
     {
@@ -129,6 +132,17 @@ class AdminProcessor
         return "";
     }
 
+    private function getCurrentEditedArticles(?array $inputedArticles, ?string $codePattern,?string $searchMode = null): array
+    {
+        if ($searchMode) {
+            return $this->tunnelToRepository->getArticlesByCodePattern($codePattern, $this->pageName);
+        }
+        if (is_array($inputedArticles)) {
+            return $inputedArticles;
+        }
+        return [];
+    }
+
     private function getCurrentSearchingCode(?string $inputedPattern): string
     {
         if (
@@ -145,7 +159,7 @@ class AdminProcessor
         echo "<script> alert('$message') </script>";
     }
 
-    private function showUserSubmitWarnings(?string $inputedArticle, ?string $inputedCodePattern): bool
+    private function showUserSubmitAttachingWarnings(?string $inputedArticle, ?string $inputedCodePattern): bool
     {
         if (empty($this->getCurrentAttachedArticle($inputedArticle))) {
             $messageList[] = self::INVALID_ARTICLE;
@@ -169,12 +183,23 @@ class AdminProcessor
         return true;
     }
 
-    private function getSubmitAvailabilityToAttach(?string $searchClick, ?string $inputedArticle, ?string $inputedCodePattern): bool // not code pattern but founded code
+    private function getSubmitAvailabilityToAttach(?string $searchClick, ?string $inputedArticle, ?string $inputedCodePattern): bool
     {
         if (!isset($searchClick)) {
             return false;
         }
         if (empty($this->getCurrentAttachedArticle($inputedArticle))) {
+            return false;
+        }
+        if (empty($this->getCurrentSearchingCode($inputedCodePattern))) {
+            return false;
+        }
+        return true;
+    }
+
+    private function getSubmitAvailabilityToEdit(?string $searchClick, ?string $inputedCodePattern): bool
+    {
+        if (!isset($searchClick)) {
             return false;
         }
         if (empty($this->getCurrentSearchingCode($inputedCodePattern))) {
@@ -223,13 +248,34 @@ class AdminProcessor
     private function wasArticleAttached(
         ?string $currentArticle,
         ?string $currentSearchingCode,
-        ?string $cancelButtonName
+        ?string $submitAttaching
     ): bool
     {
         return (
             !empty($currentArticle) &&
             !empty($currentSearchingCode) &&
-            $this->wasActionSubmited($cancelButtonName)
+            $this->wasActionSubmited($submitAttaching)
+        );
+    }
+
+    private function wasArticlesAndCodeEdited(
+        ?array $currentArticles,
+        ?string $currentSearchingCode,
+        ?string $submitEditing
+    ): bool
+    {
+        if (is_array($currentArticles)) {
+            foreach ($currentArticles as $currentArticle) {
+                if (!is_string($currentArticle)) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return (
+            !empty($currentSearchingCode) &&
+            $this->wasActionSubmited($submitEditing)
         );
     }
 
@@ -251,7 +297,32 @@ class AdminProcessor
         }
     }
 
-    private function showPossibleWarnings(
+    private function addEditingToDataBase(string $currentSerchingCode, array $currentArticles, bool $deleteCode): bool
+    {
+        $this->tunnelToRepository->updateArticlesOfCode($currentSerchingCode, $currentArticles, $this->pageName, $deleteCode);
+        return true;
+    }
+
+    private function tryAddEditingToDataBase(
+        bool $wasArticlesAndCodeEdited,
+        string $currentSearchingCode,
+        array $currentArticles,
+        bool $deleteCode
+    ): void
+    {
+        if ($wasArticlesAndCodeEdited) {
+            if ($this->addEditingToDataBase($currentSearchingCode, $currentArticles, $deleteCode)) {
+                $this->showJSMessage(self::EDITED);
+            } else {
+                $this->showJSMessage(self::NOT_EDITED_DB);
+            }
+        }
+        if (!$wasArticlesAndCodeEdited && $this->isAdminDevState()) {
+            $this->showJSMessage(self::NOT_EDITED_INPUT);
+        }
+    }
+
+    private function showPossibleAttachingWarnings(
         ?string $article_attachment_submit,
         ?string $attaching_article,
         ?string $code_pattern,
@@ -259,7 +330,37 @@ class AdminProcessor
     ): void
     {
         if ($this->wasActionSubmited($article_attachment_submit)) {
-            $this->showUserSubmitWarnings($attaching_article, $code_pattern);
+            $this->showUserSubmitAttachingWarnings($attaching_article, $code_pattern);
+        }
+        if ($this->wasActionSubmited($find_code_submit)) {
+            $this->showUserSearchWarnings($code_pattern);
+        }
+    }
+
+    private function showUserSubmitEditingWarnings(?array $inputedArticle, ?string $inputedCodePattern): bool
+    {
+        if (empty($this->getCurrentEditedArticles($inputedArticle, $inputedCodePattern))) {
+            $messageList[] = self::INVALID_ARTICLE;
+        }
+        if (empty($this->getCurrentSearchingCode($inputedCodePattern))) {
+            $messageList[] = self::INVALID_CODE;
+        }
+        if (!empty($messageList)) {
+            $this->showJSMessage(implode("\\n", $messageList));
+            return false;
+        }
+        return true;
+    }
+
+    private function showPossibleEditingWarnings(
+        ?string $editing_submit,
+        ?array $attaching_articles,
+        ?string $code_pattern,
+        ?string $find_code_submit
+    ): void
+    {
+        if ($this->wasActionSubmited($editing_submit)) {
+            $this->showUserSubmitEditingWarnings($attaching_articles, $code_pattern);
         }
         if ($this->wasActionSubmited($find_code_submit)) {
             $this->showUserSearchWarnings($code_pattern);
@@ -302,7 +403,7 @@ class AdminProcessor
             $codePattern
         );
 
-        $this->showPossibleWarnings(
+        $this->showPossibleAttachingWarnings(
             $articleAttachmentSubmit,
             $attachingArticle,
             $codePattern,
@@ -322,6 +423,52 @@ class AdminProcessor
         );
         return [
             "attaching_article"              => $currentArticle,
+            "searching_code"                 => $currentSearchingCode,
+            "send_able"                      => $submitAvailability,
+        ];
+    }
+
+    private function processCodeEditing(
+        ?string $findCodeSubmit,
+        ?array  $editingArticles,
+        ?string $codePattern,
+        ?string $editingSubmit,
+        ?string $inputedOutput,
+        ?string $deleteCode
+    ): array
+    {
+        $currentArticles = $this->getCurrentEditedArticles($editingArticles, $codePattern, $findCodeSubmit);
+
+        $currentSearchingCode = $this->getCurrentSearchingCode($codePattern);
+
+        $deleteCode = $this->wasActionSubmited($deleteCode);
+
+        $submitAvailability = $this->getSubmitAvailabilityToEdit(
+            $findCodeSubmit,
+            $codePattern
+        );
+
+        $this->showPossibleEditingWarnings(
+            $editingSubmit,
+            $editingArticles,
+            $codePattern,
+            $findCodeSubmit
+        );
+
+        $wasArticlesAndCodeEdited = $this->wasArticlesAndCodeEdited(
+            $currentArticles,
+            $currentSearchingCode,
+            $editingSubmit
+        );
+
+        $this->tryAddEditingToDataBase(
+            $wasArticlesAndCodeEdited,
+            $currentSearchingCode,
+            $currentArticles,
+            $deleteCode
+        );
+        return [
+            "attaching_articles"             => $currentArticles,
             "searching_code"                 => $currentSearchingCode,
             "send_able"                      => $submitAvailability,
         ];
@@ -359,7 +506,15 @@ class AdminProcessor
                 $renderableValues = array_merge($renderableValues, $additionalParameters);
             }
         } elseif ($mainMode == 2) {
-
+            $additionalParameters = $this->processCodeEditing(
+                $_POST["find_code_submit"],
+                $_POST["attaching_articles"],
+                $_POST["code_pattern"],
+                $_POST["article_editing_submit"],
+                "SOME OUTPUT HERE",
+                $_POST["delete_code"]
+            );
+            $renderableValues = array_merge($renderableValues, $additionalParameters);
         }
         return ["workshop.tpl.twig", $renderableValues];
     }
