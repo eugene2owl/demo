@@ -9,13 +9,16 @@ require_once "../../vendor/autoload.php";
 require_once "../service/Contents.php";
 require_once "../service/CodeProcessor.php";
 require_once "../service/AdminProcessor.php";
+require_once "../service/AdminAccessor.php";
 
-use Demo\Service\Contents as ContentsService;
-use Demo\Service\CodeProcessor;
+use Demo\Service\AdminAccessor;
 use Demo\Service\AdminProcessor;
 
 $adminProcessor = new AdminProcessor();
-list($templateName, $parameters) = $adminProcessor->getTemplateNameWithParameters();
+$adminAccessor = new AdminAccessor();
+
+$adminDevelopmentAcess = $adminAccessor->verifyPassword($_POST["admin_password"]);
+list($templateName, $parameters) = $adminProcessor->getTemplateNameWithParameters($adminDevelopmentAcess);
 
 $loader = new \Twig_Loader_Filesystem(TEMPLATES_PATH_FOR_TWIG . ADMIN_TEMPLATE_DIR);
 $twig = new \Twig_Environment($loader);

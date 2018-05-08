@@ -11,6 +11,7 @@ require_once "../service/LinkInserter.php";
 
 use Demo\Service\Contents as ContentsService;
 use Demo\Service\LinkInserter;
+
 $start = microtime(true);
 $tunnelToDB = new ContentsService();
 

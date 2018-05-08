@@ -1,8 +1,11 @@
 {% extends "baseAdmin.tpl.twig" %}
 
 {% block contents %}
-    <form method="POST">
-        <input id="switcher" type="submit" value="Go to dev." name="switcher" class="btn btn-danger">
+    <form method="POST" id="adminPassword">
+        <input id="password" type="password" name="admin_password" placeholder="password" class="form-control">
+    </form>
+    <form method="POST" id="adminDevButton">
+        <input id="switcher" type="submit" value="Go to dev." name="switcher" class="btn btn-danger" disabled>
     </form>
 
     <ol>
@@ -32,4 +35,11 @@
         {% endfor %}
     </ol>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script src="design/js/adminPasswordEnter.js"></script>
+    {% if admin_access %}
+        <script src="design/js/adminAccess.js"></script>
+    {% endif %}
 {% endblock %}

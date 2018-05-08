@@ -41,7 +41,7 @@ class AdminProcessor
         $this->pageName = $pageName;
     }
 
-    private function getUsualPage(): array
+    private function getUsualPage(bool $adminDevelopmentAcess): array
     {
         $tunnelToDB = new ContentsService();
         $pageContents = $tunnelToDB->getContentsFromPage($this->pageName);
@@ -52,9 +52,10 @@ class AdminProcessor
         return [
             "admin.tpl.twig",
             [
-                "title"      => $pageContents["titles"][0]["name"],
-                "header"     => $pageContents["titles"][0]["name"],
-                "codes"      => $codes,
+                "title"        => $pageContents["titles"][0]["name"],
+                "header"       => $pageContents["titles"][0]["name"],
+                "codes"        => $codes,
+                "admin_access" => $adminDevelopmentAcess,
             ],
         ];
     }
@@ -528,8 +529,8 @@ class AdminProcessor
         );
     }
 
-    public function getTemplateNameWithParameters(): array
+    public function getTemplateNameWithParameters(bool $adminDevelopmentAcess): array
     {
-        return ($this->isAdminDevState()) ? $this->getUsualPage() : $this->getAdminPage();
+        return ($this->isAdminDevState()) ? $this->getUsualPage($adminDevelopmentAcess) : $this->getAdminPage();
     }
 }

@@ -121,3 +121,8 @@ label:hover {
 .btn {
     margin: 10px 5px;
 }
+
+#password {
+    width: 300px;
+    margin-left: 650px;
+}
