@@ -1,0 +1,23 @@
+{
+  "message": "success",
+  "amount": 4,
+  "type": "VEHICLE",
+  "content": [
+    {
+      "engineCapacity": "1000",
+      "yearOfManufacture": 1998
+    },
+    {
+      "engineCapacity": "1400",
+      "yearOfManufacture": 2016
+    },
+    {
+      "engineCapacity": "900",
+      "yearOfManufacture": 1995
+    },
+    {
+      "engineCapacity": "2100",
+      "yearOfManufacture": 2011
+    }
+  ]
+}
